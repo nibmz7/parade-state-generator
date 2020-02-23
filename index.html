@@ -4,13 +4,14 @@
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=Edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>HTML</title>
   <!-- HTML -->
   <!-- Custom Styles -->
   <link rel="stylesheet" href="main.css">
   <script lang="javascript" src="./assets/xlsx-populate.min.js"></script>
-</head>
+  <meta charset="utf-8" />
+  <link href="https://unpkg.com/material-components-web@v4.0.0/dist/material-components-web.min.css" rel="stylesheet"></head>
 
 <body>
     
@@ -20,45 +21,27 @@
     <button>Save</button> -->
 
     <style>
-        .container {
-            display: grid;
-            grid-auto-flow: column;
-            grid-auto-columns: 100%;
-            overflow-x: scroll;
-
-        }
-        .page {
-            background: red;
+        view-pager {
+            flex: 1;
         }
     </style>
 
-    <nav-bar>
-        <slot>Home</slot>
-        <slot>Server</slot>
-        <slot>About</slot>
-        <slot>Agentfdggffggfd</slot>
-        <slot>About</slot>
-        <slot>About</slot>
-        <slot>About</slot>
-        <slot>Home</slot>
-        <slot>Server</slot>
-        <slot>About</slot>
-        <slot>Agent</slot>
+    <tab-bar>
+        <slot>Lol</slot>
+        <slot>Lol</slot>
+        <slot>Lofdsssssssssssl</slot>
+        <slot>Lol</slot>
+        <slot>Lolasdddddd</slot>
+        <slot>Lol</slot>
+        <slot>Loladsdddddd</slot>
+    </tab-bar>
 
-    </nav-bar>
-
-    <div class="container disable-scrollbars">
-        <div class="page">
-            <p>LOLOL</p>
-        </div>
     
-        <div class="page">
-            <p>LOLOL</p>
-        </div>
-    </div>
+    <view-pager></view-pager>
 
+    <button>Click me</button>    
 
-
+    <script src="https://unpkg.com/material-components-web@v4.0.0/dist/material-components-web.min.js"></script>
     <script type="module" src="main.js"></script>
 </body>
     

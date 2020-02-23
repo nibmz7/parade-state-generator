@@ -1,8 +1,10 @@
 
-import NavBar from './ui/widgets/NavBar.js';
+import TabBar from './components/TabBar.js';
+import ViewPager from './components/ViewPager.js';
+customElements.define('tab-bar', TabBar);
+customElements.define('view-pager', ViewPager);
 
-customElements.define('nav-bar', NavBar);
-
+const tabBar = document.querySelector('tab-bar');
 
 let input = document.querySelector('input');
 input.onchange = () => {

@@ -8,6 +8,7 @@ const template = `
             touch-action: none;
             width: 300vw;
             transform: translateX(0px);
+            overflow-x: hidden;
         }
         .page {
             background: red;
@@ -53,9 +54,9 @@ export default class ViewPager extends HTMLElement {
         this.attachShadow({mode: 'open'});
         this.shadowRoot.innerHTML = template;
         let container = this.shadowRoot.querySelector('.container');
-        let maxWidth = container.clientWidth / 3;
-        let dragLimit = container.clientWidth / 3 / 4;
-        let maxOffset = container.clientWidth / 3 * -2;
+        let maxWidth = container.scrollWidth / 3;
+        let dragLimit = container.scrollWidth / 3 / 5;
+        let maxOffset = container.scrollWidth / 3 * -2;
         let pages = this.shadowRoot.querySelectorAll('.page');
 
         let currentIndex = 0;
@@ -93,7 +94,7 @@ export default class ViewPager extends HTMLElement {
             let finalX = 0;
             if(distanceMoved > dragLimit) {
                 finalX = -maxWidth * (currentIndex - 1);
-                if(currentIndex != 0) currentIndex--;
+                if(currentIndex !== 0) currentIndex--;
                 
             } else if(distanceMoved < -dragLimit) {
                 finalX = -maxWidth * (currentIndex + 1);

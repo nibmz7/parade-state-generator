@@ -1,11 +1,13 @@
 import DropdownMenu from './components/DropdownMenu.js';
-import TabBar from './components/TabBar.js';
 import ViewPager from './components/ViewPager.js';
-customElements.define('tab-bar', TabBar);
 customElements.define('view-pager', ViewPager);
 customElements.define('dropdown-menu', DropdownMenu);
 
-const tabBar = document.querySelector('tab-bar');
+const dropdownMenu = document.querySelector('dropdown-menu');
+
+dropdownMenu.addEventListener("onChange", e => {
+  console.log(e.detail.next);
+});
 
 let input = document.querySelector('input');
 input.onchange = () => {

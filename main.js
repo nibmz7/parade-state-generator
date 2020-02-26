@@ -1,5 +1,32 @@
-import DropdownMenu from './components/DropdownMenu.js';
-import ViewPager from './components/ViewPager.js';
+import AttendanceDb from './logic/AttendanceDb.js';
+
+const listener = {
+  on: function(type, data) {
+    this.type(data);
+  },
+  add: function(type, callback) {
+    this.type = callback;
+  }
+}
+
+listener.add('oncomplete', data => {
+  console.log(data);
+});
+
+const db = new AttendanceDb(listener);
+db.initialize();
+
+
+
+
+
+
+
+
+
+
+import DropdownMenu from './ui/DropdownMenu.js';
+import ViewPager from './ui/ViewPager.js';
 customElements.define('view-pager', ViewPager);
 customElements.define('dropdown-menu', DropdownMenu);
 

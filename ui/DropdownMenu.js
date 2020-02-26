@@ -34,7 +34,8 @@ const template = options => `
       margin: 0;
       padding: 10px 15px;
       font-size: 25px;
-    } 
+    }
+    
     #list > .selected {
       display: none;
     }
@@ -84,16 +85,22 @@ export default class DropdownMenu extends HTMLElement {
     menu.style.setProperty('--min-height', title.offsetHeight + 'px');
     menu.style.setProperty('--max-height' ,menu.scrollHeight - title.offsetHeight+ 'px');
     Utils.onclick(title, e => {
-      opening = true;
-      menu.classList.add('appear');
+      if(!isAnimating) {
+        isAnimating = true;
+        opening = true;
+        menu.classList.add('appear');
+      }
     });
     
     const onSelected = idx => { 
-      opening = false;
-      this.prevIdx = this.currIdx;
-      this.currIdx = idx;
-      title.textContent = options[idx].innerHTML;
-      menu.classList.remove('appear');
+      if(!isAnimating) {
+        isAnimating = true;
+        opening = false;
+        this.prevIdx = this.currIdx;
+        this.currIdx = idx;
+        title.textContent = options[idx].innerHTML;
+        menu.classList.remove('appear');
+      }
     }
     
     this.options = list.querySelectorAll('p');
@@ -112,14 +119,19 @@ export default class DropdownMenu extends HTMLElement {
       onSelected(this.currIdx);
     });
     
-    menu.addEventListener('transitionend', () => {
-        if(!opening) {
-          selected.textContent = options[this.currIdx].textContent;
-          options[this.prevIdx].classList.toggle('selected');
-          options[this.currIdx].classList.toggle('selected');
-          let data = { next: this.currIdx, prev: this.prevIdx };
-          let event = new CustomEvent("onChange", { detail: data });
-          this.dispatchEvent(event);
+    let i = 0;
+    menu.addEventListener('transitionend', e => {
+        if(++i == 3) {
+          if (!opening) {
+            selected.textContent = options[this.currIdx].textContent;
+            options[this.prevIdx].classList.toggle('selected');
+            options[this.currIdx].classList.toggle('selected');
+            let data = { next: this.currIdx, prev: this.prevIdx };
+            let event = new CustomEvent("onChange", { detail: data });
+            this.dispatchEvent(event);
+          }
+          i = 0;
+          isAnimating = false;
         }
     });
     

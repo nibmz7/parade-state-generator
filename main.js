@@ -3,18 +3,27 @@ import Employee from './logic/Employee.js';
 
 const listener = {
   emit: function(type, data) {
-    this.type(data);
+    this[type](data);
   },
   on: function(type, callback) {
-    this.type = callback;
+    this[type] = callback;
   }
 }
 
 const db = new AttendanceDb(listener);
 
-listener.on('complete', data => {
-  console.log('completed');
+listener.on('ready', () => {
+    console.log('ready');
   db.getDepartments();
+});
+
+listener.on('employee-added', employee => {
+    console.log(employee);
+});
+
+listener.on('department-added', department => {
+    console.log(department);
+    db.getEmployees(department);
 });
 
 db.initialize();

@@ -1,21 +1,31 @@
 import AttendanceDb from './logic/AttendanceDb.js';
+import Employee from './logic/Employee.js';
 
 const listener = {
-  on: function(type, data) {
+  emit: function(type, data) {
     this.type(data);
   },
-  add: function(type, callback) {
+  on: function(type, callback) {
     this.type = callback;
   }
 }
 
-listener.add('oncomplete', data => {
-  console.log(data);
+const db = new AttendanceDb(listener);
+
+listener.on('complete', data => {
+  console.log('completed');
+  db.getDepartments();
 });
 
-const db = new AttendanceDb(listener);
 db.initialize();
 
+const button = document.querySelector('button');
+const input = document.querySelector('textarea');
+
+button.onclick = e => {
+  let employees = Employee.toList(input.value);
+  db.addEmployees(employees);
+}
 
 
 
@@ -24,6 +34,8 @@ db.initialize();
 
 
 
+
+/**
 
 import DropdownMenu from './ui/DropdownMenu.js';
 import ViewPager from './ui/ViewPager.js';
@@ -92,3 +104,5 @@ button.onclick = e => {
         });
       
 }
+
+**/

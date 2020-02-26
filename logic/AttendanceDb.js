@@ -13,7 +13,7 @@ export default class AttendanceDb {
     
     request.onsuccess = e => {
       this.db = e.target.result;
-      this.listener.on('oncomplete', 'siccess');
+      this.listener.emit('oncomplete', 'siccess');
     }
     
     request.onupgradeneeded = e => {
@@ -25,18 +25,26 @@ export default class AttendanceDb {
       objectStore.createIndex('byDepartment', 'department', {unique: false});
     
       objectStore.transaction.oncomplete = e => {
-        this.listener.on('oncomplete', 'hello');
+        this.listener.emit('complete', 'hello');
       }
     
     }
   }
   
   getDepartments() {
+    console.log("lol");
     let objectStore = this.db.transaction('employees').objectStore('employees');
     let index = objectStore.index('departmentTypes');
-    index.openKeyCursor().onsuccess = e => {
+    let request = index.openKeyCursor();
+    
+    request.onerror = e => {
+      console.log(JSON.stringify(e));
+    }
+    
+    request.onsuccess = e => {
       let cursor = e.target.result;
       if(cursor) {
+        
         console.log("Department: " + cursor.key);
         cursor.continue();
       }
@@ -60,11 +68,18 @@ export default class AttendanceDb {
     
   }
   
-  addEmployee(employee) {
-    let request = this.db.transaction('employees', 'readwrite').objectStore('employees').add(employee);
-    
-    request.onsuccess = e => {
+  addEmployees(list) {
+    let transaction = this.db.transaction('employees', 'readwrite');
+    let objectStore = transaction.objectStore('employees');
+    transaction.onsuccess = e => {
       console.log(request.result);
+    }
+    transaction.onerror = e => {
+      console.log(JSON.stringify(e.errorCode));
+    }
+    for(let employee of list) {
+      let request = objectStore.add(employee);
+      
     }
   }
   

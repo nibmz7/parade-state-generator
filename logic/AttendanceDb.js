@@ -1,12 +1,12 @@
-export default class AttendanceDb {
+export default class AttendanceDb extends EventTarget {
   
-  constructor(listener) {
-    this.listener = listener;
+  constructor() { 
+    super();
     this.departments = {};
   }
     
   initialize() {
-    let request = window.indexedDB.open('attendance_db', 1);
+    let request = indexedDB.open('attendance_db', 1);
     
     request.onerror = e => {
       console.log(e.errorCode);
@@ -14,7 +14,7 @@ export default class AttendanceDb {
     
     request.onsuccess = e => {
       this.db = e.target.result;
-      this.listener.emit('ready');
+      this.emit('ready');
     }
     
     request.onupgradeneeded = e => {
@@ -27,11 +27,16 @@ export default class AttendanceDb {
       employeeStore.createIndex('department', 'department', {unique: false});
       departmentStore.createIndex('department', 'department', {unique: true});
     
-      departmentStore.transaction.oncomplete = e => {
-        this.listener.emit('readyt');
-      }
-    
     }
+  }
+  
+  emit(type, data) {
+    let event = new CustomEvent(type, {detail: data});
+    this.dispatchEvent(event);
+  }
+  
+  on(type, callback) {
+    this.addEventListener(type, callback);
   }
   
   getDepartments() {
@@ -41,7 +46,7 @@ export default class AttendanceDb {
     .getAll().onsuccess = e => {
       for(let data of e.target.result) {
         this.departments[data.department] = true;
-        this.listener.emit('department-added', data.department);
+        this.emit('department-added', data.department);
       }
     }
   }
@@ -73,7 +78,7 @@ export default class AttendanceDb {
     this.departments[department] = true;
     this.db.transaction('departments', 'readwrite')
     .objectStore('departments').add({department: department});
-    this.listener.emit('department-added', department);
+    this.emit('department-added', department);
   }
   
   addEmployees(list) {
@@ -86,7 +91,7 @@ export default class AttendanceDb {
       }
       objectStore.add(employee).onsuccess = e => {
         let key = e.target.result;
-        this.listener.emit('employee-added', {key, employee});
+        this.emit('employee-added', {key, employee});
       };
     }
   }

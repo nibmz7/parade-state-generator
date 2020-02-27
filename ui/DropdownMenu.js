@@ -1,5 +1,5 @@
 import Utils from '../Utils.js';
-const template = options => `
+const template = `
   <style>
     .container {
       position: relative;
@@ -52,12 +52,12 @@ const template = options => `
   
   <div class="container">
   
-    <p class="title">Lorem ipsum</p>
+    <p class="title">Nil</p>
   
     <div class="menu">
-      <p id="selected">Lorem ipsum</p>
+      <p id="selected">Nil</p>
       <div id="list">
-        ${options}
+       
       </div>
       <div class="outerbound"></div>
     </div>
@@ -65,67 +65,54 @@ const template = options => `
   </div>
 `;
 
+let isAnimating = false;
+let isOpening = false;
+let currIdx = 0;
+let prevIdx = 0;
+let count = 0;
+
+
 export default class DropdownMenu extends HTMLElement {
   
   constructor() {
     super();
     this.attachShadow({mode: 'open'});
-    this.shadowRoot.innerHTML = template(this.innerHTML);
+    this.shadowRoot.innerHTML = template;
    
-    let menu = this.shadowRoot.querySelector('.menu');
-    let title = this.shadowRoot.querySelector('.title');
-    let list = this.shadowRoot.getElementById('list');
-    let selected = this.shadowRoot.getElementById('selected');
-    let outerbound = menu.querySelector('.outerbound');
+    this.menu = this.shadowRoot.querySelector('.menu');
+    this.titleText = this.shadowRoot.querySelector('.title');
+    this.list = this.shadowRoot.getElementById('list');
+    this.selected = this.shadowRoot.getElementById('selected');
+    this.options = [];
+    let outerbound = this.menu.querySelector('.outerbound');
  
-    this.prevIdx = 0;
-    this.currIdx = 0;
-    let opening = false;
-    let isAnimating = false;
-    menu.style.setProperty('--min-height', title.offsetHeight + 'px');
-    menu.style.setProperty('--max-height' ,menu.scrollHeight - title.offsetHeight+ 'px');
-    Utils.onclick(title, e => {
+    this.itemWidth = this.titleText.offsetHeight;
+    this.menu.style.setProperty('--min-height', `${this.itemWidth}px`);
+    
+    Utils.onclick(this.titleText, e => {
+      if(count < 2) return;
       if(!isAnimating) {
         isAnimating = true;
         opening = true;
-        menu.classList.add('appear');
+        this.menu.classList.add('appear');
       }
     });
     
-    const onSelected = idx => { 
-      if(!isAnimating) {
-        isAnimating = true;
-        opening = false;
-        this.prevIdx = this.currIdx;
-        this.currIdx = idx;
-        title.textContent = options[idx].innerHTML;
-        menu.classList.remove('appear');
-      }
-    }
-    
-    this.options = list.querySelectorAll('p');
-    let options = this.options;
-    options.forEach((option, index) => {
-      Utils.onclick(option, e => {
-        onSelected(index);
-      });
-    });
-    
-    Utils.onclick(selected, e => {
-      onSelected(this.currIdx);
+    Utils.onclick(this.selected, e => {
+      this.onSelected(currIdx);
     });
     
     Utils.onclick(outerbound, e => {
-      onSelected(this.currIdx);
+      this.onSelected(currIdx);
     });
     
     let i = 0;
-    menu.addEventListener('transitionend', e => {
+    this.menu.addEventListener('transitionend', e => {
         if(++i == 3) {
           if (!opening) {
-            selected.textContent = options[this.currIdx].textContent;
-            options[this.prevIdx].classList.toggle('selected');
-            options[this.currIdx].classList.toggle('selected');
+            this.selected.textContent = this .options[this.currIdx].textContent;
+            this.options[this.prevIdx].classList.toggle('selected');
+            this.options[this.currIdx].classList.toggle('selected');
             let data = { next: this.currIdx, prev: this.prevIdx };
             let event = new CustomEvent("onChange", { detail: data });
             this.dispatchEvent(event);
@@ -134,17 +121,40 @@ export default class DropdownMenu extends HTMLElement {
           isAnimating = false;
         }
     });
-    
-    options[0].classList.toggle('selected');
-    
   }
   
-  changeSelection(index) {
-    this.options[currIdx].textContent;
-    this.options[prevIdx].classList.toggle('selected');
-    this.options[currIdx].classList.toggle('selected');
-    this.prevIdx = this.currIdx;
-    this.currIdx = index;
+  add(item) {
+    count++;
+    this.menu.style.setProperty('--max-height', `${this.count * this.itemWidth}`);
+    let p = document.createElement('p');
+    const index = count;
+    p.textContent = item;
+    Utils.onclick(p, e => {
+      this.onSelected(index);
+    });
+    this.list.appendChild(p);
+    this.options.push(p);
+    this.setCurrentItem(count-1);
+  }
+  
+  onSelected(index) {
+    if(!isAnimating) {
+      isAnimating = true;
+      opening = false;
+      prevIdx = currIdx;
+      currIdx = idx;
+      this.titleText.textContent = this.options[idx].innerHTML;
+         menu.classList.remove('appear');
+    }
+  }
+  
+  setCurrentItem(index) {
+    prevIdx = currIdx;
+    currIdx = index;
+    this.titleText.textContent = this.options[this.currIdx].textContent;
+    this.selected.textContent = this.options[this.currIdx].textContent;
+    this.options[this.prevIdx].classList.toggle('selected');
+    this.options[this.currIdx].classList.toggle('selected');
   }
   
 }

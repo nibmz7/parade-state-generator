@@ -1,34 +1,38 @@
 import AttendanceDb from './logic/AttendanceDb.js';
 import Employee from './logic/Employee.js';
+import DropdownMenu from './ui/DropdownMenu.js';
+import ViewPager from './ui/ViewPager.js';
+import DepartmentFragment from './ui/DepartmentFragment.js';
+customElements.define('department-fragment', DepartmentFragment);
+customElements.define('view-pager', ViewPager);
+customElements.define('dropdown-menu', DropdownMenu);
 
-const listener = {
-  emit: function(type, data) {
-    this[type](data);
-  },
-  on: function(type, callback) {
-    this[type] = callback;
-  }
-}
+const viewpager = document.querySelector('view-pager');
+const dropdownMenu = document.querySelector('dropdown-menu');
 
-const db = new AttendanceDb(listener);
+const db = new AttendanceDb();
 
-listener.on('ready', () => {
-    console.log('ready');
+db.on('ready', () => {
   db.getDepartments();
 });
 
-listener.on('employee-added', employee => {
-    console.log(employee);
+db.on('employee-added', e => {
+  
 });
 
-listener.on('department-added', department => {
-    console.log(department);
-    db.getEmployees(department);
+db.on('department-added', e => {
+    let fragment = document.createElement('department-fragment');
+    fragment.setAttribute('dep', e.detail);
+    viewpager.add(fragment);
+    dropdownMenu.add(e.detail);
+    //db.getEmployees(department);
 });
 
-db.initialize();
+indexedDB.deleteDatabase('attendance_db').onsuccess = e => {
+  db.initialize();
+}
 
-const button = document.querySelector('button');
+const button = document.querySelector('#save');
 const input = document.querySelector('textarea');
 
 button.onclick = e => {
@@ -36,26 +40,12 @@ button.onclick = e => {
   db.addEmployees(employees);
 }
 
-
-
-
-
-
-
-
+dropdownMenu.addEventListener("onChange", e => {
+  let index = e.detail.next;
+  viewpager.setCurrentItem(index);
+});
 
 /**
-
-import DropdownMenu from './ui/DropdownMenu.js';
-import ViewPager from './ui/ViewPager.js';
-customElements.define('view-pager', ViewPager);
-customElements.define('dropdown-menu', DropdownMenu);
-
-const dropdownMenu = document.querySelector('dropdown-menu');
-
-dropdownMenu.addEventListener("onChange", e => {
-  console.log(e.detail.next);
-});
 
 let input = document.querySelector('input');
 input.onchange = () => {

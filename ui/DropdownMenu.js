@@ -13,19 +13,17 @@ const template = `
       z-index: 5;
       background: white;
       color: black;
-      opacity: 0;
       width: inherit;
       height: var(--min-height);
       overflow: hidden;
       box-shadow: 0;
       pointer-events: none;
-      transition: height .2s, box-shadow .2s, opacity .1s .2s
+      transition: height .5s, box-shadow .5s .3s;
     }
     
     .appear {
-      transition: opacity .1s, height .2s .1s, box-shadow .2s .1s;
+      transition: height .5s, box-shadow .5s;
       pointer-events: auto;
-      opacity: 1;
       height: var(--max-height);
       box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
     }
@@ -35,37 +33,46 @@ const template = `
       padding: 10px 15px;
       font-size: 25px;
     }
+
+    .appear > #list {
+      top: 0;
+    }
+
+    #list {
+      position: absolute;
+      top: var(--item-offset);
+      left: 0;
+      transition: all .5s;
+    }
+
+    #list > p {
+      transition: opacity .3s;
+      opacity: 0;
+    }
     
     #list > .selected {
-      display: none;
+      opacity: 1;
     }
-    
-    .outerbound {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      z-index: -1;
+
+    .appear > #list > p {
+      transition: opacity .5s .5s;
+      opacity: 1;
     }
+
   </style>
   
   <div class="container">
   
-    <p class="title">Nil</p>
-  
+    <p id="title">Empty</p>
     <div class="menu">
-      <p id="selected">Nil</p>
       <div id="list">
-       
+      
       </div>
-      <div class="outerbound"></div>
     </div>
   
   </div>
 `;
 
-let isAnimating = false;
 let isOpening = false;
 let currIdx = 0;
 let prevIdx = 0;
@@ -80,81 +87,52 @@ export default class DropdownMenu extends HTMLElement {
     this.shadowRoot.innerHTML = template;
    
     this.menu = this.shadowRoot.querySelector('.menu');
-    this.titleText = this.shadowRoot.querySelector('.title');
     this.list = this.shadowRoot.getElementById('list');
-    this.selected = this.shadowRoot.getElementById('selected');
     this.options = [];
-    let outerbound = this.menu.querySelector('.outerbound');
  
-    this.itemWidth = this.titleText.offsetHeight;
+    let title = this.shadowRoot.getElementById('title');
+    this.itemWidth = title.offsetHeight;
     this.menu.style.setProperty('--min-height', `${this.itemWidth}px`);
     
-    Utils.onclick(this.titleText, e => {
+    Utils.onclick(title, e => {
       if(count < 2) return;
-      if(!isAnimating) {
-        isAnimating = true;
-        opening = true;
-        this.menu.classList.add('appear');
-      }
-    });
-    
-    Utils.onclick(this.selected, e => {
-      this.onSelected(currIdx);
-    });
-    
-    Utils.onclick(outerbound, e => {
-      this.onSelected(currIdx);
-    });
-    
-    let i = 0;
-    this.menu.addEventListener('transitionend', e => {
-        if(++i == 3) {
-          if (!opening) {
-            this.selected.textContent = this .options[this.currIdx].textContent;
-            this.options[this.prevIdx].classList.toggle('selected');
-            this.options[this.currIdx].classList.toggle('selected');
-            let data = { next: this.currIdx, prev: this.prevIdx };
-            let event = new CustomEvent("onChange", { detail: data });
-            this.dispatchEvent(event);
-          }
-          i = 0;
-          isAnimating = false;
-        }
+      isOpening = true;
+      this.menu.classList.add('appear');
     });
   }
   
   add(item) {
     count++;
-    this.menu.style.setProperty('--max-height', `${this.count * this.itemWidth}`);
+    this.menu.style.setProperty('--max-height', `${count * this.itemWidth}px`);
     let p = document.createElement('p');
-    const index = count;
+    const index = count - 1;
     p.textContent = item;
     Utils.onclick(p, e => {
       this.onSelected(index);
     });
     this.list.appendChild(p);
     this.options.push(p);
-    this.setCurrentItem(count-1);
+    this.setCurrentItem(index);
   }
   
   onSelected(index) {
-    if(!isAnimating) {
-      isAnimating = true;
-      opening = false;
-      prevIdx = currIdx;
-      currIdx = idx;
-      this.titleText.textContent = this.options[idx].innerHTML;
-         menu.classList.remove('appear');
-    }
+    isOpening = false;
+    prevIdx = currIdx;
+    currIdx = index;
+    this.setCurrentItem(index);
+    this.menu.classList.remove('appear');
+    let data = { next: currIdx, prev: prevIdx };
+    let event = new CustomEvent("onChange", { detail: data });
+    this.dispatchEvent(event);
   }
   
   setCurrentItem(index) {
     prevIdx = currIdx;
     currIdx = index;
-    this.titleText.textContent = this.options[this.currIdx].textContent;
-    this.selected.textContent = this.options[this.currIdx].textContent;
-    this.options[this.prevIdx].classList.toggle('selected');
-    this.options[this.currIdx].classList.toggle('selected');
+    this.options[prevIdx].classList.remove('selected');
+    this.options[currIdx].classList.add('selected');
+    this.list.style.setProperty('--item-offset', `-${currIdx * this.itemWidth}px`);
+
   }
   
 }

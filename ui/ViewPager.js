@@ -108,7 +108,6 @@ export default class ViewPager extends HTMLElement {
     setCurrentItem(index) {
       this.currentIndex = index;
       let moveTo = index * this.pageWidth;
-      console.log(moveTo);
       this.container.style.transform = `translateX(-${moveTo}px`;
     }
     

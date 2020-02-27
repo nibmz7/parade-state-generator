@@ -27,6 +27,5 @@ export default class DepartmentFragment extends HTMLElement {
     let title = this.shadowRoot.getElementById('title');
     let department = this.getAttribute('dep');
     title.textContent = department;
-    console.log(department);
   }
 }

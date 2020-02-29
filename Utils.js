@@ -1,16 +1,25 @@
 const Utils = {
   onclick: function(target, callback) {
-    let dragging = false;
+    let element;
+    //https://stackoverflow.com/questions/5748476/javascript-equivalent-of-mouseleave-for-touch-interactions
     target.onpointerdown = e => {
-      dragging = false;
+      target.classList.add('active');
+      console.log(e);
+      console.log('down');
+      element = document.elementFromPoint(e.pageX,e.pageY);
+      console.log(element);
     }
     target.onpointermove = e => {
-      dragging = true;
+      
     }
     target.onpointerup = e => {
-      if (dragging) return;
-      callback(e);
+      target.classList.remove('active');
+      if(element === document.elementFromPoint(e.pageX,e.pageY)) {
+        callback(e);
+        console.log(element);
+      }
     }
+
   },
 
   animate: function(element, animation, callback) {

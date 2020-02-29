@@ -36,7 +36,10 @@ const button = document.querySelector('#save');
 const input = document.querySelector('textarea');
 
 button.onclick = e => {
-  let employees = Employee.toList(input.value);
+  let lol = `LCP, NUR ILYAS, SIGNAL WING\n
+LCP, JOHN DOE, MWP BRANCH\n
+PTE, BILLIE JOE, LOG BRANCH`;
+  let employees = Employee.toList(lol);
   db.addEmployees(employees);
 }
 

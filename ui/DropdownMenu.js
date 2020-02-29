@@ -10,20 +10,19 @@ const template = `
       border-radius: 2px;
       top: 0;
       left: 0;
-      z-index: 5;
+      z-index: 5; 
       background: white;
       color: black;
       width: inherit;
       height: var(--min-height);
       overflow: hidden;
       box-shadow: 0;
-      pointer-events: none;
+      pointer-events: auto;
       transition: height .5s, box-shadow .5s .3s;
     }
     
     .appear {
       transition: height .5s, box-shadow .5s;
-      pointer-events: auto;
       height: var(--max-height);
       box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
     }
@@ -32,6 +31,12 @@ const template = `
       margin: 0;
       padding: 10px 15px;
       font-size: 25px;
+      cursor: pointer;
+      touch-action: none;
+    }
+
+    p.active {
+      background: #909090;
     }
 
     .appear > #list {
@@ -45,19 +50,7 @@ const template = `
       transition: all .5s;
     }
 
-    #list > p {
-      transition: opacity .3s;
-      opacity: 0;
-    }
-    
-    #list > .selected {
-      opacity: 1;
-    }
 
-    .appear > #list > p {
-      transition: opacity .5s .5s;
-      opacity: 1;
-    }
 
   </style>
   
@@ -73,7 +66,7 @@ const template = `
   </div>
 `;
 
-let isOpening = false;
+let isOpen = false;
 let currIdx = 0;
 let prevIdx = 0;
 let count = 0;
@@ -94,11 +87,6 @@ export default class DropdownMenu extends HTMLElement {
     this.itemWidth = title.offsetHeight;
     this.menu.style.setProperty('--min-height', `${this.itemWidth}px`);
     
-    Utils.onclick(title, e => {
-      if(count < 2) return;
-      isOpening = true;
-      this.menu.classList.add('appear');
-    });
   }
   
   add(item) {
@@ -112,18 +100,21 @@ export default class DropdownMenu extends HTMLElement {
     });
     this.list.appendChild(p);
     this.options.push(p);
-    this.setCurrentItem(index);
   }
   
   onSelected(index) {
-    isOpening = false;
-    prevIdx = currIdx;
-    currIdx = index;
-    this.setCurrentItem(index);
-    this.menu.classList.remove('appear');
-    let data = { next: currIdx, prev: prevIdx };
-    let event = new CustomEvent("onChange", { detail: data });
-    this.dispatchEvent(event);
+    if(!isOpen) {
+      if(count < 1) return;
+      isOpen = true;
+      this.menu.classList.add('appear');
+    } else {
+      isOpen = false;
+      this.setCurrentItem(index);
+      this.menu.classList.remove('appear');
+      let data = { next: currIdx, prev: prevIdx };
+      let event = new CustomEvent("onChange", { detail: data });
+      this.dispatchEvent(event);
+    }
   }
   
   setCurrentItem(index) {
@@ -132,7 +123,6 @@ export default class DropdownMenu extends HTMLElement {
     this.options[prevIdx].classList.remove('selected');
     this.options[currIdx].classList.add('selected');
     this.list.style.setProperty('--item-offset', `-${currIdx * this.itemWidth}px`);
-
   }
   
 }

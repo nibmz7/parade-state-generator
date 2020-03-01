@@ -16,8 +16,21 @@ db.on('ready', () => {
   db.getDepartments();
 });
 
-db.on('employee-added', e => {
-  
+db.on('employees-added', e => {
+  let departments = e.detail;
+  for(let [department, employees] of Object.entries(departments)) {
+
+    let fragment = viewpager.getPage(`department-fragment[name='${department}']`);
+
+    if(!fragment) {
+      fragment = document.createElement('department-fragment');
+      fragment.setAttribute('name', department);
+      viewpager.add(fragment);
+      dropdownMenu.add(department);
+    }
+    
+    fragment.addEmployees(employees)
+  }
 });
 
 db.on('department-added', e => {

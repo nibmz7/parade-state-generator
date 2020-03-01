@@ -78,21 +78,26 @@ export default class AttendanceDb extends EventTarget {
     this.departments[department] = true;
     this.db.transaction('departments', 'readwrite')
     .objectStore('departments').add({department: department});
-    this.emit('department-added', department);
   }
   
-  addEmployees(list) {
+  addEmployees(employees) {
     let transaction = this.db.transaction('employees', 'readwrite');
     let objectStore = transaction.objectStore('employees');
-    
-    for(let employee of list) {
-      if(!this.departments[employee.department]) {
-        this.addDepartment(employee.department);
+    let list = {};
+    for(let employee of employees) {
+      let department = employee.department;
+      if(!this.departments[department]) {
+        this.addDepartment(department);
+        list[department] = [];
       }
       objectStore.add(employee).onsuccess = e => {
         let key = e.target.result;
-        this.emit('employee-added', {key, employee});
+        list[department].push({key, employee});
       };
+    }
+
+    transaction.oncomplete = e => {
+      this.emit('employees-added', list);
     }
   }
   

@@ -18,7 +18,7 @@ const template = `
   </div>
   
   <template id="item">
-    <div>
+    <div class="item">
       <p id="name"></p>
       <p id="department"></p>
       <p id="status"></p>
@@ -32,16 +32,31 @@ export default class DepartmentFragment extends HTMLElement {
     super();
     this.attachShadow({mode: 'open'});
     this.shadowRoot.innerHTML = template;
+    this.list = this.shadowRoot.getElementById('list');
     this.employees = [];
   }
   
   connectedCallback() {
     let title = this.shadowRoot.getElementById('title');
-    let department = this.getAttribute('dep');
+    let department = this.getAttribute('name');
     title.textContent = department;
   }
   
-  addEmployee(employee) {
+  addEmployees(list) {
+    for(let {key, employee} of list) {
+      let template = this.shadowRoot.getElementById('item');
+
+      let item = template.content.cloneNode(true);
+      let name = item.getElementById('name');
+      let department = item.getElementById('department');
+      let status = item.getElementById('status');
+      
+      item.id = 'employee-' + key;
+      name.textContent = employee.name;
+      department.textContent = employee.department;
+      this.list.appendChild(item);
+    }
     
   }
+
 }

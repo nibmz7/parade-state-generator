@@ -98,6 +98,10 @@ export default class ViewPager extends HTMLElement {
         } 
         **/
     }
+
+    getPage(selector) {
+      return this.container.querySelector(selector);
+    }
     
     add(fragmentElement) {
       this.container.appendChild(fragmentElement);

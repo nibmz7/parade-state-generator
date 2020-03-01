@@ -29,32 +29,21 @@
         dropdown-menu {
           width: max-content;
         }
+        .toolbar {
+          display: flex;
+        }
     </style>
 
-    <dropdown-menu>
-    </dropdown-menu>
-    
-    <button id="next">Next</button>
-    
+    <div class="toolbar">
+      <dropdown-menu></dropdown-menu>
+      <button id="edit">Edit List</button>
+    </div>
     <view-pager></view-pager>
+    <button>View summary</button>
     
     
     
-    <style>
-      textarea {
-        min-height: 100px;
-      }
-      button {
-        margin-top: 30px;
-        height: 50px;
-      }
-    </style>
     
-    <p id="content"></p>
-    
-    <textarea></textarea>
-
-    <button id="save">Save me</button>    
 
     <script type="module" src="main.js"></script>
 </body>

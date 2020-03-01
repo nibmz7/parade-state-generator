@@ -9,7 +9,6 @@ const template = `
         width: auto;
         transform: translateX(0px);
         overflow-x: hidden;
-        background: blue;
         }
       .disable-scrollbars::-webkit-scrollbar {
         width: 0px;

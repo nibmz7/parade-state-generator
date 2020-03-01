@@ -3,14 +3,22 @@ import Employee from './logic/Employee.js';
 import DropdownMenu from './ui/DropdownMenu.js';
 import ViewPager from './ui/ViewPager.js';
 import DepartmentFragment from './ui/DepartmentFragment.js';
+import EditDialogue from './ui/EditDialogue.js';
+
 customElements.define('department-fragment', DepartmentFragment);
 customElements.define('view-pager', ViewPager);
 customElements.define('dropdown-menu', DropdownMenu);
+customElements.define('edit-dialogue', EditDialogue);
 
 const viewpager = document.querySelector('view-pager');
 const dropdownMenu = document.querySelector('dropdown-menu');
 
-const db = new AttendanceDb();
+document.getElementById('edit').onclick = e => {
+  let dialogue = document.createElement('edit-dialogue');
+  document.body.appendChild(dialogue);
+}
+
+const db = AttendanceDb.getInstance();
 
 db.on('ready', () => {
   db.getDepartments();
@@ -28,7 +36,7 @@ db.on('employees-added', e => {
       viewpager.add(fragment);
       dropdownMenu.add(department);
     }
-    
+
     fragment.addEmployees(employees)
   }
 });
@@ -43,17 +51,6 @@ db.on('department-added', e => {
 
 indexedDB.deleteDatabase('attendance_db').onsuccess = e => {
   db.initialize();
-}
-
-const button = document.querySelector('#save');
-const input = document.querySelector('textarea');
-
-button.onclick = e => {
-  let lol = `LCP, NUR ILYAS, SIGNAL WING\n
-LCP, JOHN DOE, MWP BRANCH\n
-PTE, BILLIE JOE, LOG BRANCH`;
-  let employees = Employee.toList(lol);
-  db.addEmployees(employees);
 }
 
 dropdownMenu.addEventListener("onChange", e => {

@@ -1,8 +1,17 @@
+let instance;
+
 export default class AttendanceDb extends EventTarget {
   
   constructor() { 
     super();
     this.departments = {};
+  }
+
+  static getInstance() {
+    if(!instance) {
+      instance = new AttendanceDb();
+    }
+    return instance;
   }
     
   initialize() {
@@ -66,7 +75,7 @@ export default class AttendanceDb extends EventTarget {
   }
   
   updateEmployee(employee, key) {
-    let objectStore = this.db.transaction('employees', 'readwrite').objectStore('employees').put(employee, key);
+    let request = this.db.transaction('employees', 'readwrite').objectStore('employees').put(employee, key);
     
     request.onsuccess = e => {
       console.log(e.target.result);

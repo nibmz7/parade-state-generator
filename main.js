@@ -4,7 +4,9 @@ import DropdownMenu from './ui/DropdownMenu.js';
 import ViewPager from './ui/ViewPager.js';
 import DepartmentFragment from './ui/DepartmentFragment.js';
 import EditDialogue from './ui/EditDialogue.js';
+import WCButton from './ui/WCButton.js';
 
+customElements.define('wc-button', WCButton);
 customElements.define('department-fragment', DepartmentFragment);
 customElements.define('view-pager', ViewPager);
 customElements.define('dropdown-menu', DropdownMenu);

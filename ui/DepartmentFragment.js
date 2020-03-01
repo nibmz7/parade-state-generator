@@ -35,12 +35,6 @@ export default class DepartmentFragment extends HTMLElement {
     this.sortBy = 'rankInt';
   }
   
-  connectedCallback() {
-    let title = this.shadowRoot.getElementById('title');
-    let department = this.getAttribute('name');
-    title.textContent = department;
-  }
-  
   addEmployees(list) {
     this.employees = this.employees.concat(list);
     this.sortEmployees();
@@ -56,11 +50,12 @@ export default class DepartmentFragment extends HTMLElement {
       
       let template = this.shadowRoot.getElementById('item');
 
-      let item = template.content.cloneNode(true);
-      item.id = 'employee-' + key;
+      let clone = template.content.cloneNode(true);
+      let item = clone.querySelector('.item');
+      item.id = key;
 
-      let name = item.getElementById('name');
-      let status = item.getElementById('status');
+      let name = clone.getElementById('name');
+      let status = clone.getElementById('status');
 
 
       name.textContent = employeeName;

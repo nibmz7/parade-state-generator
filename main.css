@@ -36,15 +36,12 @@ body {
     padding: 0;
     margin: 0;
     overflow-x: hidden;
-}
-
-
-body {
+    --color-primary: #FF3838;
+    --color-primary-dark: #E90000;
     font-family: 'Quicksand';
     font-weight: 500;
     background: white;
     --primary-blue: #0652DD;
     --primary-blue-dark: #043DA5;
     --primary-blue-rgb: 6,82,221;
-    
 }

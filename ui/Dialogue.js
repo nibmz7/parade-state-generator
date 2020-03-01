@@ -8,11 +8,10 @@ const template = content => `
             left: 0;
             display: grid;
             grid-template-columns: 1fr;
-            grid-template-area: "content";
+            grid-template-areas: "content";
             justify-items: center;
             align-items: center;
             height: 100vh;
-            width: 100vw;
             opacity: 1;
             z-index: 99;
         }
@@ -66,6 +65,9 @@ const template = content => `
             box-shadow: 0px 4px 4px rgba(0,0,0,.25);
             padding: 15px 25px;
             transform: translateY(0px);
+            width: calc(100% - 50px);
+            box-sizing: border-box;
+            margin: 0 30px;
         }
     </style>
 

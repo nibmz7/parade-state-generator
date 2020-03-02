@@ -24,23 +24,22 @@ document.getElementById('edit').onclick = e => {
 const db = AttendanceDb.getInstance();
 
 db.on('ready', () => {
-  db.getDepartments();
+  db.getEmployees();
 });
 
+let pages = {};
 db.on('employees-added', e => {
   let departments = e.detail;
   for (let [department, employees] of Object.entries(departments)) {
 
-    let fragment = viewpager.getPage(`department-fragment[name='${department}']`);
-
-    if (!fragment) {
-      fragment = document.createElement('department-fragment');
+    if (!pages[department]) {
+      let fragment = document.createElement('department-fragment');
       fragment.setAttribute('name', department);
+      pages[department] = fragment;
       viewpager.add(fragment);
       dropdownMenu.add(department);
     }
-
-    fragment.addEmployees(employees)
+    pages[department].addEmployees(employees)
   }
 });
 
@@ -52,9 +51,9 @@ db.on('department-added', e => {
   //db.getEmployees(department);
 });
 
-indexedDB.deleteDatabase('attendance_db').onsuccess = e => {
+// indexedDB.deleteDatabase('attendance_db').onsuccess = e => {
   db.initialize();
-}
+// }
 
 dropdownMenu.addEventListener("onChange", e => {
   let index = e.detail.next;

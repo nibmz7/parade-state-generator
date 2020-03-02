@@ -29,34 +29,10 @@ export default class AttendanceDb extends EventTarget {
     request.onupgradeneeded = e => {
       this.db = e.target.result;
     
-      let employeeStore = this.db.createObjectStore('employees', { autoIncrement: true });
-      let departmentStore = this.db.createObjectStore('departments', { autoIncrement: true }); 
+      let employeeStore = this.db.createObjectStore('employees', { autoIncrement: true }); 
     
       employeeStore.createIndex('name', 'name', {unique: true});
-      employeeStore.createIndex('department', 'department', {unique: false});
-      departmentStore.createIndex('department', 'department', {unique: true});
-    
-    }
-  }
-  
-  emit(type, data) {
-    let event = new CustomEvent(type, {detail: data});
-    this.dispatchEvent(event);
-  }
-  
-  on(type, callback) {
-    this.addEventListener(type, callback);
-  }
-  
-  getDepartments() {
-    this.db
-    .transaction('departments')
-    .objectStore('departments')
-    .getAll().onsuccess = e => {
-      for(let data of e.target.result) {
-        this.departments[data.department] = true;
-        this.emit('department-added', data.department);
-      }
+      employeeStore.createIndex('department', ['department','rankInt','name'], {unique: false});
     }
   }
   
@@ -67,7 +43,7 @@ export default class AttendanceDb extends EventTarget {
         console.log(e.target.result);
       }
     } else {
-      objectStore.getAll().onsuccess = e => {
+      objectStore.index('department').getAll().onsuccess = e => {
         console.log(e.target.result);
       }
     }
@@ -82,12 +58,6 @@ export default class AttendanceDb extends EventTarget {
     }
     
   }
-
-  addDepartment(department) {
-    this.departments[department] = true;
-    this.db.transaction('departments', 'readwrite')
-    .objectStore('departments').add({department: department});
-  }
   
   addEmployees(employees) {
     let transaction = this.db.transaction('employees', 'readwrite');
@@ -96,7 +66,7 @@ export default class AttendanceDb extends EventTarget {
     for(let employee of employees) {
       let department = employee.department;
       if(!this.departments[department]) {
-        this.addDepartment(department);
+        this.departments[department] = true;
         list[department] = [];
       }
       objectStore.add(employee).onsuccess = e => {
@@ -117,5 +87,14 @@ export default class AttendanceDb extends EventTarget {
     request.onsuccess = function(event) {
       console.log('Deleted: ' + key);
     };
+  }
+
+  emit(type, data) {
+    let event = new CustomEvent(type, {detail: data});
+    this.dispatchEvent(event);
+  }
+  
+  on(type, callback) {
+    this.addEventListener(type, callback);
   }
 } 

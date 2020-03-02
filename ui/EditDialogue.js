@@ -75,8 +75,14 @@ export default class EditDialogue extends Dialogue {
 
         button.onclick = e => {
             let lol = `LCP, NUR ILYAS, SIGNAL WING\n
-            LCP, JOHN DOE, MWP BRANCH\n
-            PTE, BILLIE JOE, LOG BRANCH`;
+            MAJ, JOHN DOE, MWP BRANCH\n
+            PTE, BILLIE JOE, LOG BRANCH\n
+            CPL, HARRY POTTER, SIGNAL WING\n
+            PTE, LARRY JONES, SIGNAL WING\n
+            LCP, JIM BOB, LOG BRANCH\n
+            DX10, ROY JONES, LOG BRANCH\n
+            PTE, WILLIAM OSBORNE, MWP BRANCH\n
+            LTC, Jim, MWP BRANCH`;
             let employees = Employee.toList(lol);
             db.addEmployees(employees);
         }

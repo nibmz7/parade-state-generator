@@ -2,6 +2,14 @@ import AttendanceDb from '../logic/AttendanceDb.js';
 import Employee from '../logic/Employee.js';
 import Dialogue from './Dialogue.js';
 
+const TEXT_HINT = 
+  `RANK, NAME, DEPARTMENT\n
+CPL, Bob Jr, KKK Branch
+MAJ, James Bond, ZZZ Branch
+LCP, John Doe, XXX Branch
+PTE, William Baker, AAA Branch
+`;
+
 const template = `
     <style>
         .container {
@@ -12,13 +20,15 @@ const template = `
         textarea {
             min-height: 100px;
         }
-        button {
-            
-        }
+       
         wc-button {
-            margin-top: 30px;
+            margin-top: 20px;
             --button-font-size: 1rem;     
             --button-padding: 10px;
+        }
+        
+        p {
+          margin: 10px 0;
         }
 
         textarea {
@@ -46,11 +56,11 @@ const template = `
 
     
     <div class="container">
-        <p id="content"></p>
+        <p>Add new personnels</p>
 
-        <textarea></textarea>
+        <textarea placeholder="${TEXT_HINT}"></textarea>
 
-        <wc-button id="save">Save me</wc-button>  
+        <wc-button id="save">Save</wc-button>  
     </div>
 `;
 

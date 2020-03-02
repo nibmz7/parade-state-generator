@@ -1,10 +1,11 @@
-import Utils from '../../Utils.js';
+import Utils from '../Utils.js';
 
 const template = `
   <style>
     :host {
       --button-color: var(--color-primary);
       --button-color-dark: var(--color-primary-dark);
+      --button-radius: 5px;
     }
     :host([type="outline"]) > button {
       background: white;
@@ -18,6 +19,16 @@ const template = `
       background: rgba(0,0,0,.2);
     }
     
+    :host([type="plain"]) > button {
+      background: white;
+      color: var(--button-color);
+      border-radius: 15px;
+    }
+    
+    :host([type="plain"]) > button:active {
+      background: rgba(0,0,0,.1);
+    }
+    
     button {
       font: inherit;
       font-size: var(--button-font-size);
@@ -28,7 +39,7 @@ const template = `
       cursor: pointer;
       outline: none;
       border: none;
-      border-radius: 5px;
+      border-radius: var(--button-radius);
       color: white;
       background: var(--button-color);
       width: 100%;

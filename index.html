@@ -6,8 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=Edge">
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>HTML</title>
-  <!-- HTML -->
-  <!-- Custom Styles -->
+ 
   <link rel="stylesheet" href="main.css">
   <script lang="javascript" src="./assets/xlsx-populate.min.js"></script>
   <meta charset="utf-8" />
@@ -19,7 +18,7 @@
 
     <button>Save</button> 
     -->
-
+  
     <style>
         view-pager {
             flex: 1;
@@ -32,18 +31,23 @@
         .toolbar {
           display: flex;
         }
+        #edit {
+          --button-padding: 0;
+          --button-radius: 15px;
+        }
+        #summary {
+          --button-radius: 0;
+        }
     </style>
 
     <div class="toolbar">
       <dropdown-menu></dropdown-menu>
-      <button id="edit">Edit List</button>
+      <wc-button type="plain" id="edit">
+        <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/><path d="M0 0h24v24H0z" fill="none"/></svg>
+      </wc-button>
     </div>
     <view-pager></view-pager>
-    <button>View summary</button>
-    
-    
-    
-    
+    <wc-button id="summary">View summary</wc-button>
 
     <script type="module" src="main.js"></script>
 </body>

@@ -69,6 +69,28 @@ const template = content => `
             box-sizing: border-box;
             margin: 0 30px;
         }
+        
+        #dialogue.shake {
+            animation: shake 0.82s cubic-bezier(.36, .07, .19, .97) both;
+        }
+        
+        @keyframes shake {
+           10%, 90% {
+              transform: translateX(-1px);
+            }
+        
+           20%, 80% {
+              transform: translateX(2px);
+            }
+        
+            30%, 50%, 70% {
+              transform: translateX(-4px);
+            }
+        
+            40%, 60% {
+              transform: translateX(4px);
+            }
+          }
     </style>
 
     <div id="root">
@@ -84,21 +106,34 @@ const template = content => `
 
 export default class Dialogue extends HTMLElement {
 
-    constructor(content) {
-        super();
-        this.attachShadow({mode: 'open'});
-        this.shadowRoot.innerHTML = template(content);
-        let root = this.shadowRoot.getElementById('root');
-        let scrim = this.shadowRoot.getElementById('scrim');
+  constructor(content) {
+    super();
+    this.attachShadow({ mode: 'open' });
+    this.shadowRoot.innerHTML = template(content);
+    this.root = this.shadowRoot.getElementById('root');
+    let scrim = this.shadowRoot.getElementById('scrim');
+    let dialogue = this.shadowRoot.getElementById('dialogue');
+    this.isCancellable = false;
 
-        Utils.animate(root, 'show', () => {
-            root.classList.remove('show');
-        });
-        
-        scrim.onclick = e => {
-            Utils.animate(root, 'hide', () => {
-                this.remove();
-            });
+    Utils.animate(this.root, 'show', () => {
+      this.root.classList.remove('show');
+      scrim.onclick = e => {
+        if(this.isCancellable) {
+          this.close();
+        } else {
+          Utils.animate(dialogue, 'shake', () => {
+            dialogue.classList.remove('shake');
+          });
         }
-    }
+      }
+    });
+  }
+  
+  close() {
+    Utils.animate(this.root, 'hide', () => {
+      this.remove();
+    });
+  }
+  
+  
 }

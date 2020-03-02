@@ -17,6 +17,7 @@ const dropdownMenu = document.querySelector('dropdown-menu');
 
 document.getElementById('edit').onclick = e => {
   let dialogue = document.createElement('edit-dialogue');
+  dialogue.isCancellable = true;
   document.body.appendChild(dialogue);
 }
 
@@ -28,11 +29,11 @@ db.on('ready', () => {
 
 db.on('employees-added', e => {
   let departments = e.detail;
-  for(let [department, employees] of Object.entries(departments)) {
+  for (let [department, employees] of Object.entries(departments)) {
 
     let fragment = viewpager.getPage(`department-fragment[name='${department}']`);
 
-    if(!fragment) {
+    if (!fragment) {
       fragment = document.createElement('department-fragment');
       fragment.setAttribute('name', department);
       viewpager.add(fragment);
@@ -44,11 +45,11 @@ db.on('employees-added', e => {
 });
 
 db.on('department-added', e => {
-    let fragment = document.createElement('department-fragment');
-    fragment.setAttribute('dep', e.detail);
-    viewpager.add(fragment);
-    dropdownMenu.add(e.detail);
-    //db.getEmployees(department);
+  let fragment = document.createElement('department-fragment');
+  fragment.setAttribute('dep', e.detail);
+  viewpager.add(fragment);
+  dropdownMenu.add(e.detail);
+  //db.getEmployees(department);
 });
 
 indexedDB.deleteDatabase('attendance_db').onsuccess = e => {

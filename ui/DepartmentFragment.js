@@ -55,6 +55,22 @@ export default class DepartmentFragment extends HTMLElement {
 
       this.list.appendChild(item);
     }
+    
+    let newList = [...list];
+    newList.sort((a, b) => {
+      var nameA = a.employee.name; 
+      var nameB = b.employee.name; 
+      if (nameA < nameB) {
+        return -1;
+      }
+      if (nameA > nameB) {
+        return 1;
+      }
+
+      // names must be equal
+      return 0;
+    });
+    console.log(newList);
   }
 
   sortEmployees(type) {

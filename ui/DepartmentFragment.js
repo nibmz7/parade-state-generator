@@ -31,16 +31,33 @@ export default class DepartmentFragment extends HTMLElement {
     this.attachShadow({mode: 'open'});
     this.shadowRoot.innerHTML = template;
     this.list = this.shadowRoot.getElementById('list');
-    this.employees = [];
-    this.sortBy = 'rankInt';
+    this.employees = {};
   }
   
   addEmployees(list) {
-    this.employees = this.employees.concat(list);
-    this.sortEmployees();
+    this.employees['default'] = list;
+    for(let {key, employee} of list) {
+      let statusType = employee.status ? Status[employee.status] : "Not set";      
+      let employeeName = employee.rank + ' ' + employee.name;
+      
+      let template = this.shadowRoot.getElementById('item');
+
+      let clone = template.content.cloneNode(true);
+      let item = clone.querySelector('.item');
+      item.id = key;
+
+      let name = clone.getElementById('name');
+      let status = clone.getElementById('status');
+
+
+      name.textContent = employeeName;
+      status.textContent = 'Status: ' + statusType;
+
+      this.list.appendChild(item);
+    }
   }
 
-  sortEmployees() {
+  sortEmployees(type) {
     this.employees.sort((a, b) => {
       return a.employee.rank - b.employee.rank;
     });

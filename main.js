@@ -43,6 +43,7 @@ db.on('employees-added', e => {
   }
 });
 
+
 db.on('department-added', e => {
   let fragment = document.createElement('department-fragment');
   fragment.setAttribute('dep', e.detail);

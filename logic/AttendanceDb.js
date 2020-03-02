@@ -4,7 +4,6 @@ export default class AttendanceDb extends EventTarget {
   
   constructor() { 
     super();
-    this.departments = {};
   }
 
   static getInstance() {
@@ -36,25 +35,34 @@ export default class AttendanceDb extends EventTarget {
     }
   }
   
-  getEmployees(department) {
+  getEmployees() {
+    let list = {};
     let objectStore = this.db.transaction('employees').objectStore('employees');
-    if(department) {
-      objectStore.index('department').getAll(department).onsuccess = e => {
-        console.log(e.target.result);
+    let request = objectStore.index('department').openCursor();
+    request.onsuccess = e => {
+      let cursor = event.target.result;
+      if (cursor) {
+          let key = cursor.primaryKey;
+          let employee = cursor.value;
+          let department = employee.department;
+          if(!list[department]) {
+            list[department] = [];
+          }
+          list[department].push({key, employee});
+          cursor.continue();
       }
-    } else {
-      objectStore.index('department').getAll().onsuccess = e => {
-        console.log(e.target.result);
+      else {
+        this.emit('employees-added', list);
       }
-    }
-    
+   }
+   
   }
   
   updateEmployee(employee, key) {
     let request = this.db.transaction('employees', 'readwrite').objectStore('employees').put(employee, key);
     
     request.onsuccess = e => {
-      console.log(e.target.result);
+      this.emit('employees-added', e.target.result);
     }
     
   }
@@ -62,21 +70,15 @@ export default class AttendanceDb extends EventTarget {
   addEmployees(employees) {
     let transaction = this.db.transaction('employees', 'readwrite');
     let objectStore = transaction.objectStore('employees');
+
     let list = {};
     for(let employee of employees) {
-      let department = employee.department;
-      if(!this.departments[department]) {
-        this.departments[department] = true;
-        list[department] = [];
-      }
-      objectStore.add(employee).onsuccess = e => {
-        let key = e.target.result;
-        list[department].push({key, employee});
-      };
+      objectStore.add(employee);
     }
 
     transaction.oncomplete = e => {
-      this.emit('employees-added', list);
+      // this.emit('employees-added', list);
+      this.getEmployees();
     }
   }
   
@@ -97,4 +99,5 @@ export default class AttendanceDb extends EventTarget {
   on(type, callback) {
     this.addEventListener(type, callback);
   }
+
 } 

@@ -1,4 +1,5 @@
 import Status from '../logic/Status.js';
+import Utils from '../Utils.js';
 
 const template = `
   <style>
@@ -53,6 +54,11 @@ export default class DepartmentFragment extends HTMLElement {
       name.textContent = employeeName;
       status.textContent = 'Status: ' + statusType;
 
+      Utils.onclick(item, e => {
+        let dialogue = document.createElement('employee-dialogue');
+        document.body.appendChild(dialogue);
+      });
+
       this.list.appendChild(item);
     }
     
@@ -70,7 +76,6 @@ export default class DepartmentFragment extends HTMLElement {
       // names must be equal
       return 0;
     });
-    console.log(newList);
   }
 
   sortEmployees(type) {
@@ -93,7 +98,7 @@ export default class DepartmentFragment extends HTMLElement {
 
       name.textContent = employeeName;
       status.textContent = 'Status: ' + statusType;
-
+      
       this.list.appendChild(item);
     }
   }

@@ -5,12 +5,14 @@ import ViewPager from './ui/ViewPager.js';
 import DepartmentFragment from './ui/DepartmentFragment.js';
 import EditDialogue from './ui/EditDialogue.js';
 import WCButton from './ui/WCButton.js';
+import EmployeeDialogue from './ui/EmployeeDialogue.js';
 
 customElements.define('wc-button', WCButton);
 customElements.define('department-fragment', DepartmentFragment);
 customElements.define('view-pager', ViewPager);
 customElements.define('dropdown-menu', DropdownMenu);
 customElements.define('edit-dialogue', EditDialogue);
+customElements.define('employee-dialogue', EmployeeDialogue);
 
 const viewpager = document.querySelector('view-pager');
 const dropdownMenu = document.querySelector('dropdown-menu');
@@ -52,9 +54,9 @@ db.on('department-added', e => {
   //db.getEmployees(department);
 });
 
-// indexedDB.deleteDatabase('attendance_db').onsuccess = e => {
+//indexedDB.deleteDatabase('attendance_db').onsuccess = e => {
   db.initialize();
-// }
+//}
 
 dropdownMenu.addEventListener("onChange", e => {
   let index = e.detail.next;

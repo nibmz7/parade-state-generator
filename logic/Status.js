@@ -1,4 +1,4 @@
-const Status = [
+const STATUS = [
     'Present',
     'MC',
     'MA',
@@ -8,4 +8,4 @@ const Status = [
     'OA'
 ];
 
-export default Status;
+export default STATUS;

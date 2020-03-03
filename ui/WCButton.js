@@ -7,12 +7,20 @@ const template = `
       --button-color-dark: var(--color-primary-dark);
       --button-radius: 5px;
     }
+    
+    :host([type="solid"]) > button {
+      background: var(--button-color);
+      color: white;
+      border: 2px solid var(--button-color);
+      border-radius: 2px;
+    }
+    
     :host([type="outline"]) > button {
       background: white;
       color: var(--button-color);
       border: 2px solid;
       border-radius: 2px;
-      border-color: var (--button-color);
+      border-color: var(--button-color);
     }
     
     :host([type="outline"]) button:active {

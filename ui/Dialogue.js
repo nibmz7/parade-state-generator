@@ -113,7 +113,7 @@ export default class Dialogue extends HTMLElement {
     this.root = this.shadowRoot.getElementById('root');
     let scrim = this.shadowRoot.getElementById('scrim');
     let dialogue = this.shadowRoot.getElementById('dialogue');
-    this.isCancellable = false;
+    this.isCancellable = true;
 
     Utils.animate(this.root, 'show', () => {
       this.root.classList.remove('show');

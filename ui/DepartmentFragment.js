@@ -1,4 +1,4 @@
-import Status from '../logic/Status.js';
+import STATUS from '../logic/Status.js';
 import Utils from '../Utils.js';
 
 const template = `
@@ -33,11 +33,13 @@ export default class DepartmentFragment extends HTMLElement {
     this.shadowRoot.innerHTML = template;
     this.list = this.shadowRoot.getElementById('list');
     this.employees = {};
+    this.listItem = [];
   }
   
   addEmployees(list) {
     this.employees['default'] = list;
-    for(let {key, employee} of list) {
+    for(let i in list) {
+      let {key, employee} = list[i];
       let statusType = employee.status ? Status[employee.status] : "Not set";      
       let employeeName = employee.rank + ' ' + employee.name;
       
@@ -55,9 +57,10 @@ export default class DepartmentFragment extends HTMLElement {
       status.textContent = 'Status: ' + statusType;
 
       Utils.onclick(item, e => {
-        let dialogue = document.createElement('employee-dialogue');
-        document.body.appendChild(dialogue);
+        this.openDetails(i, employee);
       });
+      
+      this.listItem.push(item);
 
       this.list.appendChild(item);
     }
@@ -76,6 +79,17 @@ export default class DepartmentFragment extends HTMLElement {
       // names must be equal
       return 0;
     });
+  }
+  
+  onStatusChanged(itemIndex, statusIndex) {
+    let status = this.listItem[itemIndex].getElementById('status');
+    if(statusIndex != -1) status.textContent = STATUS[statusIndex];
+  }
+  
+  openDetails(index, employee) {
+    let dialogue = document.createElement('employee-dialogue');
+    dialogue.setEmployee(index, employee, this.onStatusChanged.bind(this));
+    document.body.appendChild(dialogue);
   }
 
   sortEmployees(type) {

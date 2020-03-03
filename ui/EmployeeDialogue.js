@@ -32,9 +32,7 @@ const template = `
   </style>
   
   <div>
-    <div class="info">
-      <h4>LCP Thomas Bathowski</h4>
-    </div>
+      <h4></h4>
     
     <div class="status">
       
@@ -54,6 +52,7 @@ export default class EmployeeDialogue extends Dialogue {
     super(template);
     let statusChooser = this.shadowRoot.querySelector('.status');
     let prevButton; 
+    this.statusIndex = -1;
     for(let i in STATUS) {
       let button = document.createElement('wc-button');
       button.textContent = STATUS[i];
@@ -62,10 +61,24 @@ export default class EmployeeDialogue extends Dialogue {
       
       button.addEventListener('onclick', e => {
         if(prevButton == button) return;
+        this.statusIndex = i;
         button.setAttribute('type', 'solid');
         if(prevButton) prevButton.setAttribute('type', 'outline');
         prevButton = button;
       });
     }
+  }
+  
+  setEmployee(index, employee, callback) {
+    this.onStatusChanged = callback;
+    this.itemIndex = index;
+    this.employee = employee;
+    let title = this.shadowRoot.querySelector('h4');
+    title.textContent = employee.rank + " " + employee.name;
+  }
+  
+  close() {
+    this.onStatusChanged(this.itemIndex, this.statusIndex);
+    super.close();
   }
 }

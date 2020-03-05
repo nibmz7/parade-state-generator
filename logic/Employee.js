@@ -44,8 +44,9 @@ const Employee = {
       let rankInt = rankToInt(rank);
       let name = tokens[1].trim().toUpperCase();
       let department = tokens[2].trim().toUpperCase();
+      let status = 0;
       let employee = {
-        rank, rankInt, name, department 
+        rank, rankInt, name, department, status
       }
       return employee;
     } catch(e) {

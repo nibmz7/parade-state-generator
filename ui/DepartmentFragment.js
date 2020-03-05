@@ -40,7 +40,6 @@ export default class DepartmentFragment extends HTMLElement {
     this.employees['default'] = list;
     for(let i in list) {
       let {key, employee} = list[i];
-      let statusType = employee.status ? Status[employee.status] : "Not set";      
       let employeeName = employee.rank + ' ' + employee.name;
       
       let template = this.shadowRoot.getElementById('item');
@@ -52,17 +51,14 @@ export default class DepartmentFragment extends HTMLElement {
       let name = clone.getElementById('name');
       let status = clone.getElementById('status');
 
-
       name.textContent = employeeName;
-      status.textContent = 'Status: ' + statusType;
+      status.textContent = 'Status: ' + STATUS[employee.status];
 
       Utils.onclick(item, e => {
         this.openDetails(i, employee);
       });
-      
-      this.listItem.push(item);
 
-      this.list.appendChild(item);
+      this.list.appendChild(clone);
     }
     
     let newList = [...list];
@@ -82,8 +78,9 @@ export default class DepartmentFragment extends HTMLElement {
   }
   
   onStatusChanged(itemIndex, statusIndex) {
-    let status = this.listItem[itemIndex].getElementById('status');
-    if(statusIndex != -1) status.textContent = STATUS[statusIndex];
+    let item = this.list.children[itemIndex];
+    let status = item.querySelector('#status');
+    status.textContent = STATUS[statusIndex];
   }
   
   openDetails(index, employee) {

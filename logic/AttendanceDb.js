@@ -52,7 +52,7 @@ export default class AttendanceDb extends EventTarget {
           cursor.continue();
       }
       else {
-        this.emit('employees-added', list);
+        this.emit('employees-found', list);
       }
    }
    
@@ -62,7 +62,7 @@ export default class AttendanceDb extends EventTarget {
     let request = this.db.transaction('employees', 'readwrite').objectStore('employees').put(employee, key);
     
     request.onsuccess = e => {
-      this.emit('employees-added', e.target.result);
+      this.emit('employee-added', e.target.result);
     }
     
   }
@@ -73,13 +73,12 @@ export default class AttendanceDb extends EventTarget {
 
     let list = {};
     for(let employee of employees) {
-      objectStore.add(employee);
+      objectStore.add(employee).onsuccess = e => {
+        let key = e.target.result;
+        this.emit('employee-added', {key, employee});
+      };
     }
-
-    transaction.oncomplete = e => {
-      // this.emit('employees-added', list);
-      this.getEmployees();
-    }
+    
   }
   
   deleteEmployee(key) {

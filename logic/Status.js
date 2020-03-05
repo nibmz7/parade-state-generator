@@ -1,4 +1,5 @@
 const STATUS = [
+    'Not set',
     'Present',
     'MC',
     'MA',

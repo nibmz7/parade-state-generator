@@ -1,4 +1,4 @@
-import AttendanceDb from './logic/AttendanceDb.js';
+import EmployeeRepository from './logic/EmployeeRepository.js';
 import Employee from './logic/Employee.js';
 import DropdownMenu from './ui/DropdownMenu.js';
 import ViewPager from './ui/ViewPager.js';
@@ -23,45 +23,13 @@ document.getElementById('edit').onclick = e => {
   document.body.appendChild(dialogue);
 }
 
-const db = AttendanceDb.getInstance();
-
-db.on('ready', () => {
-  db.getEmployees();
-});
-
-let pages = {};
-db.on('employees-added', e => {
-  let departments = e.detail;
-  for (let [department, employees] of Object.entries(departments)) {
-
-    if (!pages[department]) {
-      let fragment = document.createElement('department-fragment');
-      fragment.setAttribute('name', department);
-      pages[department] = fragment;
-      viewpager.add(fragment);
-      dropdownMenu.add(department);
-    }
-    pages[department].addEmployees(employees)
-  }
-});
-
-
-db.on('department-added', e => {
-  let fragment = document.createElement('department-fragment');
-  fragment.setAttribute('dep', e.detail);
-  viewpager.add(fragment);
-  dropdownMenu.add(e.detail);
-  //db.getEmployees(department);
-});
-
-//indexedDB.deleteDatabase('attendance_db').onsuccess = e => {
-  db.initialize();
-//}
-
 dropdownMenu.addEventListener("onChange", e => {
   let index = e.detail.next;
   viewpager.setCurrentItem(index);
 });
+
+const employeeRepository = new EmployeeRepository();
+employeeRepository.start();
 
 /**
 

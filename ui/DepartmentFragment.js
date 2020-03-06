@@ -32,21 +32,25 @@ export default class DepartmentFragment extends HTMLElement {
     this.attachShadow({mode: 'open'});
     this.shadowRoot.innerHTML = template;
     this.list = this.shadowRoot.getElementById('list');
-    this.employees = {};
-    this.listItem = [];
   }
   
-  addEmployees(list) {
-    this.employees['default'] = list;
-    for(let i in list) {
-      let {key, employee} = list[i];
+  setDepartment(department) {
+    this.department = department;
+  }
+  
+  addEmployee(employee, index) {
+    //let referenceNode = this.list.childNodes[index];
+    let newNode = this.createItem(employee, index);
+    this.list.appendChild(newNode);
+  }
+  
+  createItem(employee, index) {
       let employeeName = employee.rank + ' ' + employee.name;
       
       let template = this.shadowRoot.getElementById('item');
 
       let clone = template.content.cloneNode(true);
       let item = clone.querySelector('.item');
-      item.id = key;
 
       let name = clone.getElementById('name');
       let status = clone.getElementById('status');
@@ -55,11 +59,11 @@ export default class DepartmentFragment extends HTMLElement {
       status.textContent = 'Status: ' + STATUS[employee.status];
 
       Utils.onclick(item, e => {
-        this.openDetails(i, employee);
+        this.openDetails(index, employee);
       });
 
-      this.list.appendChild(clone);
-    }
+      return clone;
+    
     
     let newList = [...list];
     newList.sort((a, b) => {

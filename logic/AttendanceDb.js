@@ -5,13 +5,6 @@ export default class AttendanceDb extends EventTarget {
   constructor() { 
     super();
   }
-
-  static getInstance() {
-    if(!instance) {
-      instance = new AttendanceDb();
-    }
-    return instance;
-  }
     
   initialize() {
     let request = indexedDB.open('attendance_db', 1);
@@ -36,7 +29,6 @@ export default class AttendanceDb extends EventTarget {
   }
   
   getEmployees() {
-    let list = {};
     let objectStore = this.db.transaction('employees').objectStore('employees');
     let request = objectStore.index('department').openCursor();
     request.onsuccess = e => {
@@ -44,27 +36,17 @@ export default class AttendanceDb extends EventTarget {
       if (cursor) {
           let key = cursor.primaryKey;
           let employee = cursor.value;
-          let department = employee.department;
-          if(!list[department]) {
-            list[department] = [];
-          }
-          list[department].push({key, employee});
+          this.emit('employee-added', {key, employee});
           cursor.continue();
       }
-      else {
-        this.emit('employees-found', list);
-      }
-   }
-   
+    }
   }
   
   updateEmployee(employee, key) {
     let request = this.db.transaction('employees', 'readwrite').objectStore('employees').put(employee, key);
-    
     request.onsuccess = e => {
-      this.emit('employee-added', e.target.result);
+      console.log('employee updated');
     }
-    
   }
   
   addEmployees(employees) {

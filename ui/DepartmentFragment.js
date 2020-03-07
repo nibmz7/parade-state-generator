@@ -36,6 +36,10 @@ export default class DepartmentFragment extends HTMLElement {
     this.shadowRoot.innerHTML = template;
     this.list = this.shadowRoot.getElementById('list');
   }
+
+  setPresenter(presenter) {
+    this.presenter = presenter;
+  }
   
   setDepartment(department) {
     this.department = department;
@@ -44,12 +48,10 @@ export default class DepartmentFragment extends HTMLElement {
   addEmployee(employee, index) {    
     let newNode = this.createItem(employee, index);
     let referenceNode = this.list.children[index];
-    console.log(referenceNode);
     this.list.insertBefore(
       newNode,
-      referenceNode ? referenceNode : null
+      referenceNode 
     );
-    // this.list.appendChild(newNode);
   }
   
   createItem(employee, index) {
@@ -76,6 +78,7 @@ export default class DepartmentFragment extends HTMLElement {
     let item = this.list.children[itemIndex];
     let status = item.querySelector('#status');
     status.textContent = STATUS[statusIndex];
+    this.presenter.updateEmployeeStatus(this.department, itemIndex, statusIndex);
   }
   
   openDetails(index, employee) {

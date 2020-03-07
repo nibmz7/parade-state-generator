@@ -1,10 +1,11 @@
 export default class DepartmentPresenter {
 
     constructor(employeeRepository) {
+        this.employeeRepository = employeeRepository;
         this.fragments = {};
         this.viewpager = document.querySelector('view-pager');
         this.dropdownMenu = document.querySelector('dropdown-menu');
-        employeeRepository.on('employee-added', this.addEmployee.bind(this));
+        this.employeeRepository.on('employee-added', this.addEmployee.bind(this));
 
         this.dropdownMenu.addEventListener("onChange", e => {
             let index = e.detail.next;
@@ -17,7 +18,8 @@ export default class DepartmentPresenter {
         let department = employee.department;
         if(!this.fragments[department]) {
             let fragment = document.createElement('department-fragment');
-            fragment.setAttribute('name', department);
+            fragment.setPresenter(this);
+            fragment.setDepartment(department);
             this.fragments[department] = fragment;
             this.viewpager.add(fragment);
             this.dropdownMenu.add(department);
@@ -25,11 +27,12 @@ export default class DepartmentPresenter {
         this.fragments[department].addEmployee(employee, index);
     }
 
-    removeEmployee(department, index) {
+    updateEmployeeStatus(department, index, status) {
+        this.employeeRepository.updateEmployeeStatus(department, index, status);
+    }
+
+    updateEmployeeInfo(employee, index) {
         
     }
 
-    updateEmployee(department, index) {
-
-    }
 }

@@ -42,19 +42,23 @@ export default class EmployeeRepository extends EventTarget {
         if(isHigher) length--;
         else break;
       }
-      this.list[department].splice(length, 0, employee);
-    } else this.list[department].push(employee);
+    } 
+    this.list[department].splice(length, 0, {key, employee});
     this.emit('employee-added', {employee, index: length});
   }
   
-  removeEmployee(index, key, employee) {
-    this.list[department].splice(index, 1);
+  removeEmployee(department, index) {
+    let key = this.list[department][index].key;
     this.db.removeEmployee(key);
+    this.list[department].splice(index, 1);
   }
   
-  updateEmployee(index, key, employee) {
-    this.list[department][index] = employee;
+  updateEmployeeStatus(department, index, status) {
+    let key = this.list[department][index].key;
+    let employee = this.list[department][index].employee;
+    employee.status = status;
     this.db.updateEmployee(key, employee);
+    this.list[department][index] = employee;
   }
 
   addEmployees(string) {

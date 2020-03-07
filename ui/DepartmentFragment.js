@@ -10,6 +10,9 @@ const template = `
     p {
       margin: 0;
     }
+    .item {
+      margin-bottom: 15px;
+    }
   </style>
   
   <div class="page">
@@ -38,20 +41,24 @@ export default class DepartmentFragment extends HTMLElement {
     this.department = department;
   }
   
-  addEmployee(employee, index) {
-    //let referenceNode = this.list.childNodes[index];
+  addEmployee(employee, index) {    
     let newNode = this.createItem(employee, index);
-    this.list.appendChild(newNode);
+    let referenceNode = this.list.children[index];
+    console.log(referenceNode);
+    this.list.insertBefore(
+      newNode,
+      referenceNode ? referenceNode : null
+    );
+    // this.list.appendChild(newNode);
   }
   
   createItem(employee, index) {
       let employeeName = employee.rank + ' ' + employee.name;
       
       let template = this.shadowRoot.getElementById('item');
-
       let clone = template.content.cloneNode(true);
-      let item = clone.querySelector('.item');
 
+      let item = clone.querySelector('.item');
       let name = clone.getElementById('name');
       let status = clone.getElementById('status');
 
@@ -63,22 +70,6 @@ export default class DepartmentFragment extends HTMLElement {
       });
 
       return clone;
-    
-    
-    let newList = [...list];
-    newList.sort((a, b) => {
-      var nameA = a.employee.name; 
-      var nameB = b.employee.name; 
-      if (nameA < nameB) {
-        return -1;
-      }
-      if (nameA > nameB) {
-        return 1;
-      }
-
-      // names must be equal
-      return 0;
-    });
   }
   
   onStatusChanged(itemIndex, statusIndex) {
@@ -91,31 +82,6 @@ export default class DepartmentFragment extends HTMLElement {
     let dialogue = document.createElement('employee-dialogue');
     dialogue.setEmployee(index, employee, this.onStatusChanged.bind(this));
     document.body.appendChild(dialogue);
-  }
-
-  sortEmployees(type) {
-    this.employees.sort((a, b) => {
-      return a.employee.rank - b.employee.rank;
-    });
-    for(let {key, employee} of this.employees) {
-      let statusType = employee.status ? Status[employee.status] : "Not set";      
-      let employeeName = employee.rank + ' ' + employee.name;
-      
-      let template = this.shadowRoot.getElementById('item');
-
-      let clone = template.content.cloneNode(true);
-      let item = clone.querySelector('.item');
-      item.id = key;
-
-      let name = clone.getElementById('name');
-      let status = clone.getElementById('status');
-
-
-      name.textContent = employeeName;
-      status.textContent = 'Status: ' + statusType;
-      
-      this.list.appendChild(item);
-    }
   }
 
 }

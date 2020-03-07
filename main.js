@@ -15,8 +15,6 @@ customElements.define('dropdown-menu', DropdownMenu);
 customElements.define('edit-dialogue', EditDialogue);
 customElements.define('employee-dialogue', EmployeeDialogue);
 
-
-
 document.getElementById('edit').onclick = e => {
   let dialogue = document.createElement('edit-dialogue');
   dialogue.isCancellable = true;

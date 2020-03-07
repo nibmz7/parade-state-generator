@@ -26,13 +26,8 @@ export default class EmployeeRepository extends EventTarget {
   }
   
   isHigher(a, b) {
-    if(a.rankIdx < b.rankIdx) {
-      if(a.name < b.name) {
-        return true;
-      } else {
-        return false;
-      }
-    } else return false;
+    if(a.rankInt < b.rankInt) return true;
+     else return false;
   }
   
   employeeAdded(e) {
@@ -41,9 +36,9 @@ export default class EmployeeRepository extends EventTarget {
     if(!this.list[department]) this.list[department] = [];
     let length = this.list[department].length;
     if(length > 0) {
-      while(true) {
+      while(length > 0) {
         let a = this.list[department][length - 1];
-        let isHigher = this.isHigher(a, employee);
+        let isHigher = this.isHigher(employee, a);
         if(isHigher) length--;
         else break;
       }

@@ -73,7 +73,9 @@ export default class EditDialogue extends Dialogue {
         const input = this.shadowRoot.querySelector('textarea');
 
         button.onclick = e => {
-            let lol = `LCP, NUR ILYAS, SIGNAL WING\n
+            let text;
+            if(input.value.length == 0) 
+            text = `LCP, NUR ILYAS, SIGNAL WING\n
             MAJ, JOHN DOE, MWP BRANCH\n
             PTE, BILLIE JOE, LOG BRANCH\n
             CPL, HARRY POTTER, SIGNAL WING\n
@@ -82,7 +84,8 @@ export default class EditDialogue extends Dialogue {
             DX10, ROY JONES, LOG BRANCH\n
             PTE, WILLIAM OSBORNE, MWP BRANCH\n
             LTC, Jim, MWP BRANCH`;
-            employeeRepository.addEmployees(lol);
+            else text = input.value;
+            employeeRepository.addEmployees(text);
         }
     }
 }

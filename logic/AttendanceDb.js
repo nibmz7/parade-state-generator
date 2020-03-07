@@ -1,5 +1,3 @@
-let instance;
-
 export default class AttendanceDb extends EventTarget {
   
   constructor() { 
@@ -52,6 +50,10 @@ export default class AttendanceDb extends EventTarget {
   addEmployees(employees) {
     let transaction = this.db.transaction('employees', 'readwrite');
     let objectStore = transaction.objectStore('employees');
+
+    transaction.onerror = e => {
+      console.log(e);
+    }
 
     let list = {};
     for(let employee of employees) {

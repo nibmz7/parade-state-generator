@@ -1,18 +1,22 @@
 import AttendanceDb from './AttendanceDb.js';
+import Employee from './Employee.js';
 
+let instance;
 export default class EmployeeRepository extends EventTarget {
   
   constructor() {
     super();
-    this.fragments = {};
     this.list = {}; 
-    this.viewpager = document.querySelector('view-pager');
-    this.dropdownMenu = document.querySelector('dropdown-menu');
     this.db = new AttendanceDb();
     this.db.on('employee-added', this.employeeAdded.bind(this));
     this.db.on('ready', () => {
       this.db.getEmployees();
     });
+  }
+
+  static getInstance() {
+    if(!instance) instance = new EmployeeRepository();
+    return instance;
   }
   
   start() {
@@ -34,14 +38,7 @@ export default class EmployeeRepository extends EventTarget {
   employeeAdded(e) {
     let {key, employee} = e.detail;
     let department = employee.department;
-    if(!this.fragments[department]) {
-      let fragment = document.createElement('department-fragment');
-      fragment.setAttribute('name', department);
-      this.fragments[department] = fragment;
-      this.list[department] = [];
-      this.viewpager.add(fragment);
-      this.dropdownMenu.add(department);
-    }
+    if(!this.list[department]) this.list[department] = [];
     let length = this.list[department].length;
     if(length > 0) {
       while(true) {
@@ -52,7 +49,7 @@ export default class EmployeeRepository extends EventTarget {
       }
       this.list[department].splice(length, 0, employee);
     } else this.list[department].push(employee);
-    this.fragments[department].addEmployee(employee, length);
+    this.emit('employee-added', {employee, index: length});
   }
   
   removeEmployee(index, key, employee) {
@@ -63,6 +60,20 @@ export default class EmployeeRepository extends EventTarget {
   updateEmployee(index, key, employee) {
     this.list[department][index] = employee;
     this.db.updateEmployee(key, employee);
+  }
+
+  addEmployees(string) {
+    let employees = Employee.toList(string);
+    this.db.addEmployees(employees);
+  }
+
+  emit(type, data) {
+    let event = new CustomEvent(type, {detail: data});
+    this.dispatchEvent(event);
+  }
+  
+  on(type, callback) {
+    this.addEventListener(type, callback);
   }
   
 }

@@ -6,6 +6,7 @@ import DepartmentFragment from './ui/DepartmentFragment.js';
 import EditDialogue from './ui/EditDialogue.js';
 import WCButton from './ui/WCButton.js';
 import EmployeeDialogue from './ui/EmployeeDialogue.js';
+import EmployeePresenter from './presenter/DepartmentPresenter.js';
 
 customElements.define('wc-button', WCButton);
 customElements.define('department-fragment', DepartmentFragment);
@@ -14,8 +15,7 @@ customElements.define('dropdown-menu', DropdownMenu);
 customElements.define('edit-dialogue', EditDialogue);
 customElements.define('employee-dialogue', EmployeeDialogue);
 
-const viewpager = document.querySelector('view-pager');
-const dropdownMenu = document.querySelector('dropdown-menu');
+
 
 document.getElementById('edit').onclick = e => {
   let dialogue = document.createElement('edit-dialogue');
@@ -23,12 +23,8 @@ document.getElementById('edit').onclick = e => {
   document.body.appendChild(dialogue);
 }
 
-dropdownMenu.addEventListener("onChange", e => {
-  let index = e.detail.next;
-  viewpager.setCurrentItem(index);
-});
-
-const employeeRepository = new EmployeeRepository();
+const employeeRepository = EmployeeRepository.getInstance();
+const employeePresenter = new EmployeePresenter(employeeRepository);
 employeeRepository.start();
 
 /**

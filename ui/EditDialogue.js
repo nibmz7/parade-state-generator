@@ -1,5 +1,4 @@
-import AttendanceDb from '../logic/AttendanceDb.js';
-import Employee from '../logic/Employee.js';
+import EmployeeRepository from '../logic/EmployeeRepository.js';
 import Dialogue from './Dialogue.js';
 
 const TEXT_HINT = 
@@ -69,7 +68,7 @@ export default class EditDialogue extends Dialogue {
     constructor() {
         super(template);
 
-        const db = AttendanceDb.getInstance();
+        const employeeRepository = EmployeeRepository.getInstance();
         const button = this.shadowRoot.getElementById('save');
         const input = this.shadowRoot.querySelector('textarea');
 
@@ -83,8 +82,7 @@ export default class EditDialogue extends Dialogue {
             DX10, ROY JONES, LOG BRANCH\n
             PTE, WILLIAM OSBORNE, MWP BRANCH\n
             LTC, Jim, MWP BRANCH`;
-            let employees = Employee.toList(lol);
-            db.addEmployees(employees);
+            employeeRepository.addEmployees(lol);
         }
     }
 }

@@ -50,7 +50,6 @@ const Employee = {
       }
       return employee;
     } catch(e) {
-      console.log(e);
       return null;
     }
   },

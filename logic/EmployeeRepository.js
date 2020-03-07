@@ -58,7 +58,6 @@ export default class EmployeeRepository extends EventTarget {
     let employee = this.list[department][index].employee;
     employee.status = status;
     this.db.updateEmployee(key, employee);
-    this.list[department][index] = employee;
   }
 
   addEmployees(string) {

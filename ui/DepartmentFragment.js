@@ -63,11 +63,13 @@ export default class DepartmentFragment extends HTMLElement {
       let item = clone.querySelector('.item');
       let name = clone.getElementById('name');
       let status = clone.getElementById('status');
+      item.setAttribute('status', employee.status);
 
       name.textContent = employeeName;
-      status.textContent = 'Status: ' + STATUS[employee.status];
+      status.textContent = STATUS[employee.status];
 
       Utils.onclick(item, e => {
+        employee.status = item.getAttribute('status');
         this.openDetails(index, employee);
       });
 
@@ -76,6 +78,7 @@ export default class DepartmentFragment extends HTMLElement {
   
   onStatusChanged(itemIndex, statusIndex) {
     let item = this.list.children[itemIndex];
+    item.setAttribute('status', statusIndex);
     let status = item.querySelector('#status');
     status.textContent = STATUS[statusIndex];
     this.presenter.updateEmployeeStatus(this.department, itemIndex, statusIndex);

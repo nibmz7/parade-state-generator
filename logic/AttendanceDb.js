@@ -42,9 +42,6 @@ export default class AttendanceDb extends EventTarget {
   
   updateEmployee(employee, key) {
     let request = this.db.transaction('employees', 'readwrite').objectStore('employees').put(key, employee);
-    request.onsuccess = e => {
-      console.log('employee updated');
-    }
   }
   
   addEmployees(employees) {

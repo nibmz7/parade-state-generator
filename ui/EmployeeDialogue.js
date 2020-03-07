@@ -50,13 +50,20 @@ export default class EmployeeDialogue extends Dialogue {
   
   constructor() {
     super(template);
+  }
+
+  setStatus(index) {
     let statusChooser = this.shadowRoot.querySelector('.status');
     let prevButton; 
-    this.statusIndex = -1;
+    this.statusIndex = index;
     for(let i in STATUS) {
       let button = document.createElement('wc-button');
       button.textContent = STATUS[i];
-      button.setAttribute('type', 'outline');
+      if(i == this.statusIndex) {
+        button.setAttribute('type', 'solid');
+        prevButton = button;
+      }
+      else button.setAttribute('type', 'outline')
       statusChooser.appendChild(button);
       
       button.addEventListener('onclick', e => {
@@ -75,6 +82,7 @@ export default class EmployeeDialogue extends Dialogue {
     this.employee = employee;
     let title = this.shadowRoot.querySelector('h4');
     title.textContent = employee.rank + " " + employee.name;
+    this.setStatus(employee.status);
   }
   
   close() {

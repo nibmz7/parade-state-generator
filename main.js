@@ -1,3 +1,13 @@
+window.onload = () => {
+    var w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+    var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
+    
+    let root = document.querySelector(':root');
+    root.style.height = h;
+    root.style.width = w;
+    root.style.fontSize = Math.round(h/100);
+ }
+
 import EmployeeRepository from './logic/EmployeeRepository.js';
 import Employee from './logic/Employee.js';
 import DropdownMenu from './ui/DropdownMenu.js';

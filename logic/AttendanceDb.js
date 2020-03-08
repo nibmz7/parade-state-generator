@@ -63,12 +63,7 @@ export default class AttendanceDb extends EventTarget {
   }
   
   deleteEmployee(key) {
-    let request = this.db.transaction('employees', 'readwrite')
-      .objectStore('employees')
-      .delete(key);
-    request.onsuccess = function(event) {
-      console.log('Deleted: ' + key);
-    };
+    this.db.transaction('employees', 'readwrite').objectStore('employees').delete(key);
   }
 
   emit(type, data) {

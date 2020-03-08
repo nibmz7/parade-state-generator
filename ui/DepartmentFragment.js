@@ -83,10 +83,20 @@ export default class DepartmentFragment extends HTMLElement {
     status.textContent = STATUS[statusIndex];
     this.presenter.updateEmployeeStatus(this.department, itemIndex, statusIndex);
   }
+
+  onDeleteEmployee(itemIndex) {
+    this.list.children[itemIndex].remove();
+    this.presenter.removeEmployee(this.department, itemIndex);
+  }
+
+  onSaveEmployee(itemIndex, input) {
+    this.onDeleteEmployee(itemIndex);
+    this.presenter.saveEmployeeInfo(input);
+  }
   
   openDetails(index, employee) {
     let dialogue = document.createElement('employee-dialogue');
-    dialogue.setEmployee(index, employee, this.onStatusChanged.bind(this));
+    dialogue.setEmployee(index, employee, this);
     document.body.appendChild(dialogue);
   }
 

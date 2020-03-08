@@ -27,12 +27,17 @@ export default class DepartmentPresenter {
         this.fragments[department].addEmployee(employee, index);
     }
 
+    removeEmployee(department, index) {
+        this.employeeRepository.removeEmployee(department, index);
+    }
+
     updateEmployeeStatus(department, index, status) {
         this.employeeRepository.updateEmployeeStatus(department, index, status);
     }
 
-    updateEmployeeInfo(employee, index) {
-        
+    saveEmployeeInfo(input) {
+        this.employeeRepository.addEmployees(input);
+
     }
 
 }

@@ -35,7 +35,7 @@ body {
     flex-direction: column;
     padding: 0;
     margin: 0;
-    overflow-x: hidden;
+    overflow: hidden;
     --color-primary: #FF3838;
     --color-primary-dark: #E90000;
     font-family: 'Quicksand';

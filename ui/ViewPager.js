@@ -4,7 +4,7 @@ const template = `
         display: grid;
         grid-auto-flow: column;
         grid-auto-columns: 100vw;
-        height: 50vh;
+        height: 100%;
         touch-action: none;
         width: auto;
         transform: translateX(0px);

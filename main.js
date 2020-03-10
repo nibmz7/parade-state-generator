@@ -16,7 +16,7 @@ import DepartmentFragment from './ui/DepartmentFragment.js';
 import EditDialogue from './ui/EditDialogue.js';
 import WCButton from './ui/WCButton.js';
 import EmployeeDialogue from './ui/EmployeeDialogue.js';
-import EmployeePresenter from './presenter/DepartmentPresenter.js';
+import DepartmentPresenter from './presenter/DepartmentPresenter.js';
 import SummaryView from './ui/SummaryView.js';
 
 customElements.define('wc-button', WCButton);
@@ -37,7 +37,7 @@ document.getElementById('summary').onclick = e => {
 }
 
 const employeeRepository = EmployeeRepository.getInstance();
-const employeePresenter = new EmployeePresenter(employeeRepository);
+const departmentPresenter = new DepartmentPresenter();
 employeeRepository.start();
 
 /**

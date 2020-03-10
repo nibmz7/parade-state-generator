@@ -1,7 +1,8 @@
+import EmployeeRepository from '../logic/EmployeeRepository.js';
 export default class DepartmentPresenter {
 
-    constructor(employeeRepository) {
-        this.employeeRepository = employeeRepository;
+    constructor() {
+        this.employeeRepository = EmployeeRepository.getInstance();
         this.fragments = {};
         this.viewpager = document.querySelector('view-pager');
         this.dropdownMenu = document.querySelector('dropdown-menu');

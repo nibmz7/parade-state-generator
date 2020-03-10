@@ -1,7 +1,10 @@
+import SummaryPresenter from '../presenter/SummaryPresenter.js';
+import Status from '../logic/Status.js';
+
 const template = `
     <style>
         .container {
-            background: aquamarine;
+            background: white;
             height: 100%;
             width: 100%;
             position: absolute;
@@ -19,17 +22,49 @@ const template = `
         h2 {
             margin: 0;
         }
+        
+        wc-button {
+          --button-radius: 0;
+          --button-padding: 15px 10px;
+          --button-font-size: 1.3rem;
+        }
+        
+        .container {
+          height: 100%;
+          display: flex;
+          flex-direction: column;
+        }
+        
+        #list {
+          flex: 1;
+        }
+        
     </style>
 
     <div class="container">
         <h2>SUMMARY VIEW</h2>
+        <div id="list"></div>
+        <wc-button>Export to excel</wc-button>
     </div>
+    
+    <template id="header">
+      <div class="header">
+        <h4></h4>
+      </div>
+    </template>
+    
+    <template id="item"> 
+      <div class="item">
+        <p></p>
+      </div>
+    </template>
 `;
 
 export default class SummaryView extends HTMLElement {
 
     constructor() {
         super();
+        this.summaryPresenter = new SummaryPresenter();
         this.attachShadow({mode: 'open'});
         this.shadowRoot.innerHTML = template;
         this.shadowRoot.querySelector('h2').onclick = e => {
@@ -39,5 +74,31 @@ export default class SummaryView extends HTMLElement {
 
     show() {
         this.shadowRoot.querySelector('.container').classList.add('show');
+        let list = this.shadowRoot.getElementById('list');
+        let data = this.summaryPresenter.getSummary();
+        for(let [status, employees] of Object.entries(data)) {
+          let header = this.createHeader(Status[status]);
+          list.appendChild(header);
+          for(let employee of employees) {
+            let item = this.createItem(employee);
+            list.appendChild(item);
+          }
+        }
+    }
+    
+    createHeader(department) {
+      let template = this.shadowRoot.getElementById('header');
+      let clone = template.content.cloneNode(true);
+      let title = clone.querySelector('h4');
+      title.textContent = department;
+      return clone;
+    }
+    
+    createItem(employee) {
+      let template = this.shadowRoot.getElementById('item');
+      let clone = template.content.cloneNode(true);
+      let name = clone.querySelector('p');
+      name.textContent = employee.rank + " " + employee.name;
+      return clone;
     }
 }

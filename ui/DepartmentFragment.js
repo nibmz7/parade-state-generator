@@ -66,7 +66,7 @@ export default class DepartmentFragment extends HTMLElement {
       item.setAttribute('status', employee.status);
 
       name.textContent = employeeName;
-      status.textContent = STATUS[employee.status];
+      status.textContent = STATUS[employee.status].name;
 
       Utils.onclick(item, e => {
         employee.status = item.getAttribute('status');

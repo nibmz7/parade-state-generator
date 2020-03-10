@@ -12,7 +12,7 @@ const template = `
     .status {
       display: flex;
       flex-wrap: wrap;
-      width: 70vw;
+      width: 90%;
       --button-padding: 5px;
     }
     .status > wc-button {
@@ -133,7 +133,7 @@ export default class EmployeeDialogue extends Dialogue {
     this.statusIndex = index;
     for(let i in STATUS) {
       let button = document.createElement('wc-button');
-      button.textContent = STATUS[i];
+      button.textContent = STATUS[i].name;
       if(i == this.statusIndex) {
         button.setAttribute('type', 'solid');
         prevButton = button;

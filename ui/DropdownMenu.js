@@ -7,11 +7,10 @@ const template = `
     }
     .menu {
       position: absolute;
-      border-radius: 2px;
+      border-bottom-right-radius: 2px;
       top: 0;
       left: 0;
       z-index: 5; 
-      background: white;
       color: black;
       width: inherit;
       height: var(--min-height);
@@ -19,6 +18,7 @@ const template = `
       box-shadow: 0;
       pointer-events: auto;
       transition: height .5s, box-shadow .5s .3s;
+      background: white;
     }
     
     .appear {
@@ -33,6 +33,7 @@ const template = `
       font-size: 25px;
       cursor: pointer;
       touch-action: none;
+      transition: .2s background;
     }
 
     p.active {
@@ -44,6 +45,7 @@ const template = `
     }
 
     #list {
+      width: inherit;
       position: absolute;
       top: var(--item-offset);
       left: 0;
@@ -55,7 +57,6 @@ const template = `
   </style>
   
   <div class="container">
-  
     <p id="title">Empty</p>
     <div class="menu">
       <div id="list">

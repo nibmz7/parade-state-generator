@@ -35,10 +35,13 @@ export default class DepartmentPresenter {
     updateEmployeeStatus(department, index, status) {
         this.employeeRepository.updateEmployeeStatus(department, index, status);
     }
+    
+    updateEmployeeRemark(department, index, remark) {
+      this.employeeRepository.updateEmployeeRemark(department, index, remark);
+    }
 
     saveEmployeeInfo(input) {
         this.employeeRepository.addEmployees(input);
-
     }
 
 }

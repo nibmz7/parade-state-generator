@@ -111,6 +111,7 @@ export default class EmployeeDialogue extends Dialogue {
     let editButton = this.shadowRoot.getElementById('edit');
     let saveButton = this.shadowRoot.getElementById('save');
     let deleteButton = this.shadowRoot.getElementById('delete');
+    this.remark = this.shadowRoot.getElementById('status-input');
     this.saveInput = this.shadowRoot.getElementById('save-input');
     editButton.onclick = e => {
       editScreen.style.display = 'flex';
@@ -126,6 +127,12 @@ export default class EmployeeDialogue extends Dialogue {
       this.close();
     }
   }
+  
+  close() {
+    let remark = this.remark.value.trim();
+    this.callback.onRemarkChanged(this.itemIndex, remark);
+    super.close();
+  }
 
   setStatus(index) {
     let statusChooser = this.shadowRoot.querySelector('.status');
@@ -138,7 +145,7 @@ export default class EmployeeDialogue extends Dialogue {
         button.setAttribute('type', 'solid');
         prevButton = button;
       }
-      else button.setAttribute('type', 'outline')
+      else button.setAttribute('type', 'outline');
       statusChooser.appendChild(button);
       
       button.onclick = e => {
@@ -156,6 +163,7 @@ export default class EmployeeDialogue extends Dialogue {
     this.callback = callback;
     this.itemIndex = index;
     this.employee = employee;
+    this.remark.value = employee.remark;
     let title = this.shadowRoot.querySelector('h4');
     title.textContent = employee.rank + " " + employee.name;
     this.setStatus(employee.status);

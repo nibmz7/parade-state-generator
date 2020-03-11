@@ -20,12 +20,12 @@ const template = `
             transform: translateY(0%);
         }
 
-        h2 {
+        h3 {
             margin: 0;
             display: flex;
-            justify-content: center;
-            padding: 10px;
-            box-shadow: 0px 2px 3px 0px rgba(0,0,0,0.5);
+            justify-content: start;
+            padding: 12px 10px;
+            box-shadow: 0px 2px 3px 0px rgba(0,0,0,0.2);
         }
         
         wc-button {
@@ -68,7 +68,7 @@ const template = `
     </style>
 
     <div class="container">
-        <h2>Close</h2>
+        <h3>X Close</h3>
         <div id="list"></div>
         <wc-button>Export to excel</wc-button>
         
@@ -97,9 +97,10 @@ export default class SummaryView extends HTMLElement {
         this.summaryPresenter = new SummaryPresenter();
         this.attachShadow({mode: 'open'});
         this.shadowRoot.innerHTML = template;
-        this.shadowRoot.querySelector('h2').onclick = e => {
-            this.close();
-        }
+        let h3 = this.shadowRoot.querySelector('h3');
+        Utils.onclick(h3, e => {
+          this.close();  
+        });
         this.shadowRoot.querySelector('wc-button').onclick = e => {
           this.downloadFile();
         }

@@ -65,6 +65,22 @@ const template = `
           animation: fade-out 1s;
         }
         
+        .header {
+          padding: 10px 10px 0 10px;
+        }
+        
+        .sub-header {
+          padding: 10px;
+        }
+        
+        .item {
+          padding: 10px;
+          font-size: 0.7rem;
+        }
+        
+        h4, h5, p {
+          margin: 0;
+        }
     </style>
 
     <div class="container">
@@ -83,11 +99,18 @@ const template = `
       </div>
     </template>
     
+    <template id="sub-header">
+      <div class="sub-header">
+        <h5></h5>
+      </div>
+    </template>
+    
     <template id="item"> 
       <div class="item">
         <p></p>
       </div>
     </template>
+    
 `;
 
 export default class SummaryView extends HTMLElement {
@@ -118,28 +141,32 @@ export default class SummaryView extends HTMLElement {
         let list = this.shadowRoot.getElementById('list');
         list.innerHTML = "";
         let data = this.summaryPresenter.getSummary();
-        for(let [status, employees] of Object.entries(data)) {
-          let header = this.createHeader(Status[status].name);
+        for(let [category, statusTypes] of Object.entries(data)) {
+          let header = this.createHeader(category);
+          let headerTitle = header.querySelector('h4');
           list.appendChild(header);
-          for(let employee of employees) {
-            let item = this.createItem(employee);
-            list.appendChild(item);
+          let count = 0;
+          for(let [status, employees] of Object.entries(statusTypes)) {
+            let subHeader = this.createSubHeader(Status[status].name);
+            list.appendChild(subHeader);
+            for(let employee of employees) {
+              let item = this.createItem(employee);
+              list.appendChild(item);
+              count++;
+            }
           }
+          let headerText = category + ' x ' + count;
+          headerTitle.textContent = headerText;
         }
         
         this.summaryPresenter.downloadToExcel()
           .then(file => {
+            this.fileUrl = file.url;
+            this.fileName = file.name;
             Utils.animate(loading, 'fade-out' ,() => {
               loading.style.display = 'none';
               loading.classList.remove('fade-out');
             });
-            var a = document.createElement('a');
-            a.href = file.url;
-            a.download = file.name;
-            document.body.appendChild(a);
-            a.click();
-            a.remove();
-            window.URL.revokeObjectURL(file.url);
           });
     }
     
@@ -152,19 +179,30 @@ export default class SummaryView extends HTMLElement {
       a.remove();
     }
     
-    createHeader(department) {
+    createHeader(category) {
       let template = this.shadowRoot.getElementById('header');
       let clone = template.content.cloneNode(true);
       let title = clone.querySelector('h4');
-      title.textContent = department;
+      title.textContent = category;
+      return clone;
+    }
+    
+    createSubHeader(status) {
+      let template = this.shadowRoot.getElementById('sub-header');
+      let clone = template.content.cloneNode(true);
+      let title = clone.querySelector('h5');
+      title.textContent = status;
       return clone;
     }
     
     createItem(employee) {
       let template = this.shadowRoot.getElementById('item');
-      let clone = template.content.cloneNode(true);
+      let clone = template.content.cloneNode(true); 
       let name = clone.querySelector('p');
-      name.textContent = employee.rank + " " + employee.name;
+      let text = employee.rank + " " + employee.name;
+      if(employee.remark && employee.remark.length > 0) 
+       text += " - " + employee.remark
+      name.textContent = text;
       return clone;
     }
 }

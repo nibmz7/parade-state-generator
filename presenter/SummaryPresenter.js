@@ -13,8 +13,11 @@ export default class SummaryPresenter {
     for (let [department, employees] of Object.entries(data)) {
       for (let {key,employee} of employees) {
         let status = employee.status;
-        if(!summary[status]) summary[status] = [];
-        summary[status].push(employee);
+        let category = Status[status].category;
+        if(!summary[category]) summary[category] = {};
+        if(!summary[category][status]) 
+          summary[category][status] = [];
+        summary[category][status].push(employee);
       }
     }
     return summary;

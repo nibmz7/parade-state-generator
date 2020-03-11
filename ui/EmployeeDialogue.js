@@ -163,6 +163,7 @@ export default class EmployeeDialogue extends Dialogue {
     this.callback = callback;
     this.itemIndex = index;
     this.employee = employee;
+    console.log(employee);
     this.remark.value = employee.remark;
     let title = this.shadowRoot.querySelector('h4');
     title.textContent = employee.rank + " " + employee.name;

@@ -81,7 +81,8 @@ export default class DepartmentFragment extends HTMLElement {
       let name = clone.getElementById('name');
       let status = clone.getElementById('status');
       item.setAttribute('status', employee.status);
-
+      if(employee.remark)
+      item.setAttribute('remark', employee.remark);
     
       name.textContent = employeeName;
       status.textContent = STATUS[employee.status].name + remark;

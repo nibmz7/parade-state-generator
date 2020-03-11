@@ -34,6 +34,7 @@ const template = `
           --button-font-size: 1.3rem;
           --color-primary: #2ecc71;
           --color-primary-dark: #27ae60;
+          box-shadow: 0px 2px 3px 2px rgba(0,0,0,0.2);
         }
         
         .container {
@@ -44,8 +45,9 @@ const template = `
         
         #list {
           flex: 1;
-          overflow-y: auto;
-        }
+          overflow-y: scroll; 
+          webkit-overflow-scrolling: touch;
+        }  
         
         .loading {
           position: absolute;
@@ -66,21 +68,31 @@ const template = `
         }
         
         .header {
-          padding: 10px 10px 0 10px;
+          display: flex:
+          justify-content: center;
+          align-items: center;
+          padding: 10px;
+          background: #95a5a6;
+          margin-top: 5px;
+        }
+        
+        .header:first-child {
+          margin-top: 0;
         }
         
         .sub-header {
-          padding: 10px;
+          padding: 10px 10px 5px 10px;
         }
         
         .item {
-          padding: 10px;
+          padding: 5px 10px;
           font-size: 0.7rem;
         }
         
         h4, h5, p {
           margin: 0;
         }
+        
     </style>
 
     <div class="container">

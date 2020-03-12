@@ -1,6 +1,5 @@
 import EmployeeRepository from '../logic/EmployeeRepository.js';
 import Status from '../logic/Status.js';
-import * as XlsxPopulate from '../assets/xlsx-populate.min.js';
 
 export default class SummaryPresenter {
   
@@ -88,7 +87,7 @@ export default class SummaryPresenter {
       }
       output[startIndex][0] = `*${Status[status].fullName}*`;
     }
-    let workbook = await XlsxPopulate.default.fromBlankAsync()
+    let workbook = await XlsxPopulate.fromBlankAsync()
             // Modify the workbook.
     workbook.sheet(0).name("Attendance sheet");
     workbook.sheet(0).column("A").style({ bold: true, italic: true });

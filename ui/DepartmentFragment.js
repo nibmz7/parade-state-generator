@@ -110,7 +110,7 @@ export default class DepartmentFragment extends HTMLElement {
       remarkText = ` (${remark})`;
     let status = item.querySelector('#status');
     status.textContent = STATUS[statusIndex].name + remarkText;
-    this.presenter.updateEmployeeRemark(this.department, itemIndex, remark);
+    this.presenter.updateEmployeeRemark(this.department, key, remark);
   }
   
   onStatusChanged(key, statusIndex) {
@@ -118,13 +118,13 @@ export default class DepartmentFragment extends HTMLElement {
     item.setAttribute('status', statusIndex);
     let status = item.querySelector('#status');
     status.textContent = STATUS[statusIndex].name;
-    this.presenter.updateEmployeeStatus(this.department, itemIndex, statusIndex);
+    this.presenter.updateEmployeeStatus(this.department, key, statusIndex);
   }
 
   onDeleteEmployee(key) {
     let item = this.getListItem(key);
     item.remove();
-    this.presenter.removeEmployee(this.department, itemIndex);
+    this.presenter.removeEmployee(this.department, key);
   }
 
   onSaveEmployee(key, input) {

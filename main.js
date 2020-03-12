@@ -27,6 +27,7 @@ customElements.define('edit-dialogue', EditDialogue);
 customElements.define('employee-dialogue', EmployeeDialogue);
 customElements.define('summary-view', SummaryView);
 
+
 document.getElementById('edit').onclick = e => {
   let dialogue = document.createElement('edit-dialogue');
   dialogue.isCancellable = true;

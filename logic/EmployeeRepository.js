@@ -31,7 +31,7 @@ export default class EmployeeRepository extends EventTarget {
     if(a.rankInt < b.rankInt) return true;
      else return false;
   }
-  
+
   employeeAdded(e) {
     let {key, employee} = e.detail;
     let department = employee.department;
@@ -70,7 +70,7 @@ export default class EmployeeRepository extends EventTarget {
     this.db.updateEmployee(key, employee);
   }
 
-  updateEmployeeRemark(department, index, remark) {
+  updateEmployeeRemark(department, key, remark) {
     let index = this.getItemIndex(department, key);
     let employee = this.list[department][index].employee;
     employee.remark = remark;

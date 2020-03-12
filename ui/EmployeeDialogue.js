@@ -118,19 +118,19 @@ export default class EmployeeDialogue extends Dialogue {
     }
 
     saveButton.onclick = e => {
-      this.callback.onSaveEmployee(this.itemIndex, this.saveInput.value);
-      this.close();
+      this.callback.onSaveEmployee(this.key, this.saveInput.value);
+      super.close();
     }
 
     deleteButton.onclick = e => {
-      this.callback.onDeleteEmployee(this.itemIndex);
-      this.close();
+      this.callback.onDeleteEmployee(this.key);
+      super.close();
     }
   }
   
   close() {
     let remark = this.remark.value.trim();
-    this.callback.onRemarkChanged(this.itemIndex, remark);
+    this.callback.onRemarkChanged(this.key, remark);
     super.close();
   }
 
@@ -154,14 +154,14 @@ export default class EmployeeDialogue extends Dialogue {
         button.setAttribute('type', 'solid');
         if(prevButton) prevButton.setAttribute('type', 'outline');
         prevButton = button;
-        this.callback.onStatusChanged(this.itemIndex, this.statusIndex);
+        this.callback.onStatusChanged(this.key, this.statusIndex);
       };
     }
   }
   
-  setEmployee(index, employee, callback) {
+  setEmployee(key, employee, callback) {
     this.callback = callback;
-    this.itemIndex = index;
+    this.key = key;
     this.employee = employee;
     this.remark.value = employee.remark;
     let title = this.shadowRoot.querySelector('h4');

@@ -19,6 +19,7 @@ export default class DepartmentPresenter {
     removeDepartment(e) {
       let department = e.detail;
       this.fragments[department].remove();
+      this.dropdownMenu.remove(department);
       delete this.fragments[department];
     }
 

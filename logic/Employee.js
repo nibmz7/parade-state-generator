@@ -59,7 +59,6 @@ const Employee = {
       let employee = {
         rank, rankInt, name, department, status, isRegular
       }
-      console.log(employee);
       return employee;
     } catch(e) {
       return null;

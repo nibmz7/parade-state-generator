@@ -68,10 +68,8 @@ const template = `
 `;
 
 let isOpen = false;
-let currIdx = 0;
-let prevIdx = 0;
+let currItem = null;
 let count = 0;
-
 
 export default class DropdownMenu extends HTMLElement {
   
@@ -87,43 +85,58 @@ export default class DropdownMenu extends HTMLElement {
     let title = this.shadowRoot.getElementById('title');
     this.itemWidth = title.offsetHeight;
     this.menu.style.setProperty('--min-height', `${this.itemWidth}px`);
-    
   }
   
   add(item) {
     count++;
     this.menu.style.setProperty('--max-height', `${count * this.itemWidth}px`);
     let p = document.createElement('p');
-    const index = count - 1;
     p.textContent = item;
     Utils.onclick(p, e => {
-      this.onSelected(index);
+      this.onSelected(item);
     });
     this.list.appendChild(p);
-    this.options.push(p);
+    this.options.push(item);
   }
   
-  onSelected(index) {
+  remove(item) {
+    let index = this.options.findIndex(el => el == item);
+    this.options.splice(index, 1);
+    count--;
+    this.list.children[index].remove();
+    this.menu.style.setProperty('--max-height', `${count * this.itemWidth}px`);
+    currItem = null;
+    this.setCurrentItem(this.options[0]);
+    let event = new CustomEvent("onChange", { detail: {next: 0 }});
+    this.dispatchEvent(event);
+  }
+  
+  onSelected(item) {
+    if(count == 1) return;
     if(!isOpen) {
       if(count < 1) return;
       isOpen = true;
       this.menu.classList.add('appear');
     } else {
       isOpen = false;
-      this.setCurrentItem(index);
+      this.setCurrentItem(item);
       this.menu.classList.remove('appear');
-      let data = { next: currIdx, prev: prevIdx };
+      let index = this.options.findIndex(el => el == item);
+      let data = {next: index};
       let event = new CustomEvent("onChange", { detail: data });
       this.dispatchEvent(event);
     }
   }
   
-  setCurrentItem(index) {
-    prevIdx = currIdx;
-    currIdx = index;
-    this.options[prevIdx].classList.remove('selected');
-    this.options[currIdx].classList.add('selected');
-    this.list.style.setProperty('--item-offset', `-${currIdx * this.itemWidth}px`);
+  setCurrentItem(item) {
+    if(currItem != null) {
+      let index = this.options.findIndex(el => el == currItem);
+      this.list.children[index].classList.remove('selected');
+    }
+    let index = this.options.findIndex(el => el == item);
+    this.list.children[index].classList.add('selected');
+    this.list.style.setProperty('--item-offset', `-${index * this.itemWidth}px`);
+    currItem = item;
   }
   
 }

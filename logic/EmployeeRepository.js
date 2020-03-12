@@ -23,7 +23,7 @@ export default class EmployeeRepository extends EventTarget {
   }
   
   start() {
-      indexedDB.deleteDatabase('attendance_db');
+      //indexedDB.deleteDatabase('attendance_db');
       this.db.initialize();
   }
   

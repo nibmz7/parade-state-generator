@@ -57,7 +57,7 @@ const Employee = {
       let department = tokens[lastIndex].trim().toUpperCase();
       let status = 0;
       let employee = {
-        rank, rankInt, name, department, status, isRegular
+        rank, rankInt, name, department, status, isRegular, remark: ''
       }
       return employee;
     } catch(e) {

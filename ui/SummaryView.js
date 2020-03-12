@@ -94,6 +94,11 @@ const template = `
           margin: 0;
         }
         
+        .bold {
+          color: #c0392b;
+          font-weight: 700;
+        }
+        
     </style>
 
     <div class="container">
@@ -158,17 +163,21 @@ export default class SummaryView extends HTMLElement {
           let header = this.createHeader(category);
           let headerTitle = header.querySelector('h4');
           list.appendChild(header);
-          let count = 0;
+          let regCount = 0;
+          let nsfCount = 0;
           for(let [status, employees] of Object.entries(statusTypes)) {
             let subHeader = this.createSubHeader(Status[status].name);
             list.appendChild(subHeader);
             for(let employee of employees) {
               let item = this.createItem(employee);
               list.appendChild(item);
-              count++;
+              if(employee.isRegular) regCount++;
+              else nsfCount++;
             }
           }
-          let headerText = category + ' x ' + count;
+          let headerText = category + " - ";
+          if(nsfCount > 0) headerText += nsfCount + " NSF";
+          if(regCount > 0) headerText += " & " + regCount + " REG";
           headerTitle.textContent = headerText;
         }
         
@@ -212,6 +221,8 @@ export default class SummaryView extends HTMLElement {
       let template = this.shadowRoot.getElementById('item');
       let clone = template.content.cloneNode(true); 
       let name = clone.querySelector('p');
+      if(employee.remark.length > 0)
+        name.classList.add('bold');
       let text = employee.rank + " " + employee.name;
       if(employee.remark && employee.remark.length > 0) 
        text += " - " + employee.remark

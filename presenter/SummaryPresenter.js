@@ -56,10 +56,12 @@ export default class SummaryPresenter {
     }
     let index = 0;
     let output = [];
-    for(let employee of summary[1]) {
-      output.push(['', ++index, toName(employee)]);
+    if(summary[1]) {
+      for(let employee of summary[1]) {
+        output.push(['', ++index, toName(employee)]);
+      }
+      output[0][0] = "*Present*";
     }
-    output[0][0] = "*Present*";
 
     let strength = index + '/' + list.length;
 

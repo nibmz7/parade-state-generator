@@ -11,6 +11,7 @@
 dist/
 .parcel-cache/
 .cache/
+gh-pages/
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
 

@@ -14,6 +14,13 @@ export default class AttendanceDb extends EventTarget {
     request.onsuccess = e => {
       this.db = e.target.result;
       this.emit('ready');
+      this.db.transaction('employees')
+      .objectStore('employees')
+      .count()
+      .onsuccess = e => {
+        let count = e.target.result;
+        if(count == 0) this.emit('empty');
+      };
     }
     
     request.onupgradeneeded = e => {
@@ -32,8 +39,8 @@ export default class AttendanceDb extends EventTarget {
     request.onsuccess = e => {
       let cursor = event.target.result;
       if (cursor) {
-          let key = cursor.primaryKey;
           let employee = cursor.value;
+          let key = cursor.primaryKey;
           this.emit('employee-added', {key, employee});
           cursor.continue();
       }

@@ -40,14 +40,26 @@ const Employee = {
   fromString(string) {
     try {
       let tokens = string.split(',');
+      let lastIndex = tokens.length - 1;
+      let lastToken = tokens[lastIndex].trim().toUpperCase();
+      let isRegular = lastToken == 'TRUE';
+      if(isRegular) lastIndex--;
+      let nameIndex = 1;
+      let name = "";
+      while(nameIndex < lastIndex) {
+        if(nameIndex > 1) name += ", ";
+        name += tokens[nameIndex].trim().toUpperCase();
+        nameIndex++;
+      }
       let rank = tokens[0].trim().toUpperCase();
       let rankInt = rankToInt(rank);
-      let name = tokens[1].trim().toUpperCase();
-      let department = tokens[2].trim().toUpperCase();
+      if(rankInt === undefined) throw Error;
+      let department = tokens[lastIndex].trim().toUpperCase();
       let status = 0;
       let employee = {
-        rank, rankInt, name, department, status
+        rank, rankInt, name, department, status, isRegular
       }
+      console.log(employee);
       return employee;
     } catch(e) {
       return null;

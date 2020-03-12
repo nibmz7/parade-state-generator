@@ -12,6 +12,9 @@ export default class EmployeeRepository extends EventTarget {
     this.db.on('ready', () => {
       this.db.getEmployees();
     });
+    this.db.on('empty', () => {
+      this.emit('empty');
+    });
   }
 
   static getInstance() {
@@ -20,9 +23,8 @@ export default class EmployeeRepository extends EventTarget {
   }
   
   start() {
-    //indexedDB.deleteDatabase('attendance_db').onsuccess = e => {
-    this.db.initialize();
-    //}
+      indexedDB.deleteDatabase('attendance_db');
+      this.db.initialize();
   }
   
   isHigher(a, b) {
@@ -42,24 +44,34 @@ export default class EmployeeRepository extends EventTarget {
       else break;
     }
     this.list[department].splice(length, 0, {key, employee});
-    this.emit('employee-added', {employee, index: length});
+    this.emit('employee-added', {key, employee, index: length});
   }
   
-  removeEmployee(department, index) {
-    let key = this.list[department][index].key;
+  getItemIndex(department, key) {
+    return this.list[department].findIndex(el => el.key == key);
+  }
+  
+  removeEmployee(department, key) {
     this.db.deleteEmployee(key);
+    let index = this.getItemIndex(department, key);
     this.list[department].splice(index, 1);
+    if(this.list[department].length == 0) {
+      this.emit('department-removed', department);
+      delete this.list[department];
+      if(Object.keys(this.list).length === 0) 
+        this.emit('empty');
+    }
   }
   
-  updateEmployeeStatus(department, index, status) {
-    let key = this.list[department][index].key;
+  updateEmployeeStatus(department, key, status) {
+    let index = this.getItemIndex(department, key);
     let employee = this.list[department][index].employee;
     employee.status = status;
     this.db.updateEmployee(key, employee);
   }
 
   updateEmployeeRemark(department, index, remark) {
-    let key = this.list[department][index].key;
+    let index = this.getItemIndex(department, key);
     let employee = this.list[department][index].employee;
     employee.remark = remark;
     this.db.updateEmployee(key, employee);

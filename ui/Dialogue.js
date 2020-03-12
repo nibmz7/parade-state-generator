@@ -135,5 +135,4 @@ export default class Dialogue extends HTMLElement {
     });
   }
   
-  
 }

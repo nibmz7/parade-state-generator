@@ -59,8 +59,8 @@ export default class DepartmentFragment extends HTMLElement {
     this.department = department;
   }
   
-  addEmployee(employee, index) {    
-    let newNode = this.createItem(employee, index);
+  addEmployee(key, employee, index) {    
+    let newNode = this.createItem(key, employee, index);
     let referenceNode = this.list.children[index];
     this.list.insertBefore(
       newNode,
@@ -68,7 +68,7 @@ export default class DepartmentFragment extends HTMLElement {
     );
   }
   
-  createItem(employee, index) {
+  createItem(key, employee, index) {
       let employeeName = employee.rank + ' ' + employee.name;
       let remark = "";
       if(employee.remark && employee.remark.length > 0)
@@ -80,6 +80,7 @@ export default class DepartmentFragment extends HTMLElement {
       let item = clone.querySelector('.item');
       let name = clone.getElementById('name');
       let status = clone.getElementById('status');
+      item.setAttribute('key', key);
       item.setAttribute('status', employee.status);
       if(employee.remark)
       item.setAttribute('remark', employee.remark);
@@ -90,14 +91,18 @@ export default class DepartmentFragment extends HTMLElement {
       Utils.onclick(item, e => {
         employee.status = item.getAttribute('status');
         employee.remark = item.getAttribute('remark');
-        this.openDetails(index, employee);
+        this.openDetails(key, employee);
       });
 
       return clone;
   }
   
-  onRemarkChanged(itemIndex, remark) {
-    let item = this.list.children[itemIndex];
+  getListItem(key) {
+    return this.list.querySelector(`.item[key='${key}']`);
+  }
+  
+  onRemarkChanged(key, remark) {
+    let item = this.getListItem(key);
     item.setAttribute('remark', remark);
     let statusIndex = item.getAttribute('status');
     let remarkText = "";
@@ -108,27 +113,28 @@ export default class DepartmentFragment extends HTMLElement {
     this.presenter.updateEmployeeRemark(this.department, itemIndex, remark);
   }
   
-  onStatusChanged(itemIndex, statusIndex) {
-    let item = this.list.children[itemIndex];
+  onStatusChanged(key, statusIndex) {
+    let item = this.getListItem(key);
     item.setAttribute('status', statusIndex);
     let status = item.querySelector('#status');
     status.textContent = STATUS[statusIndex].name;
     this.presenter.updateEmployeeStatus(this.department, itemIndex, statusIndex);
   }
 
-  onDeleteEmployee(itemIndex) {
-    this.list.children[itemIndex].remove();
+  onDeleteEmployee(key) {
+    let item = this.getListItem(key);
+    item.remove();
     this.presenter.removeEmployee(this.department, itemIndex);
   }
 
-  onSaveEmployee(itemIndex, input) {
-    this.onDeleteEmployee(itemIndex);
+  onSaveEmployee(key, input) {
+    this.onDeleteEmployee(key);
     this.presenter.saveEmployeeInfo(input);
   }
   
-  openDetails(index, employee) {
+  openDetails(key, employee) {
     let dialogue = document.createElement('employee-dialogue');
-    dialogue.setEmployee(index, employee, this);
+    dialogue.setEmployee(key, employee, this);
     document.body.appendChild(dialogue);
   }
 

@@ -68,7 +68,7 @@ export default class EditDialogue extends Dialogue {
     constructor() {
         super(template);
 
-        const employeeRepository = EmployeeRepository.getInstance();
+        this.employeeRepository = EmployeeRepository.getInstance();
         const button = this.shadowRoot.getElementById('save');
         const input = this.shadowRoot.querySelector('textarea');
 
@@ -85,7 +85,17 @@ export default class EditDialogue extends Dialogue {
             PTE, WILLIAM OSBORNE, MWP BRANCH\n
             LTC, Jim, MWP BRANCH`;
             else text = input.value;
-            employeeRepository.addEmployees(text);
+            this.employeeRepository.addEmployees(text);
         }
+    }
+    
+    setCancellable(isCancellable) {
+      this.isCancellable = isCancellable;
+      if(!isCancellable) {
+        this.employeeRepository.on('employee-added', 
+          e => {
+            this.close();
+        });
+      }
     }
 }

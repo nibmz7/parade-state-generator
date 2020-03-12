@@ -35,8 +35,11 @@ document.getElementById('edit').onclick = e => {
 document.getElementById('summary').onclick = e => {
     document.querySelector('summary-view').show();
 }
-
 const employeeRepository = EmployeeRepository.getInstance();
+employeeRepository.on('empty', e => {
+  let dialogue = document.createElement('edit-dialogue');
+  dialogue.setCancellable(false);
+  document.body.appendChild(dialogue);
+});
 const departmentPresenter = new DepartmentPresenter();
 employeeRepository.start();
-

@@ -43,10 +43,11 @@ const template = `
           flex-direction: column;
         }
         
-        #list {
-          flex: 1;
-          overflow-y: scroll; 
-          webkit-overflow-scrolling: touch;
+        #list { height: 100%;
+        overflow-y: scroll;
+        -webkit-overflow-scrolling: touch;
+        scroll-behavior: smooth;
+       // flex: 1;
         }  
         
         .loading {

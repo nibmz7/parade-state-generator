@@ -8,14 +8,22 @@ export default class DepartmentPresenter {
         this.dropdownMenu = document.querySelector('dropdown-menu');
         this.employeeRepository.on('employee-added', this.addEmployee.bind(this));
 
+        this.employeeRepository.on('department-removed', this.removeDepartment.bind(this));
+
         this.dropdownMenu.addEventListener("onChange", e => {
             let index = e.detail.next;
             this.viewpager.setCurrentItem(index);
         });
     }
+    
+    removeDepartment(e) {
+      let department = e.detail;
+      this.fragments[department].remove();
+      delete this.fragments[department];
+    }
 
     addEmployee(e) {
-        let {employee, index} = e.detail;
+        let {key, employee, index} = e.detail;
         let department = employee.department;
         if(!this.fragments[department]) {
             let fragment = document.createElement('department-fragment');
@@ -25,19 +33,19 @@ export default class DepartmentPresenter {
             this.viewpager.add(fragment);
             this.dropdownMenu.add(department);
         }
-        this.fragments[department].addEmployee(employee, index);
+        this.fragments[department].addEmployee(key, employee, index);
     }
 
-    removeEmployee(department, index) {
-        this.employeeRepository.removeEmployee(department, index);
+    removeEmployee(department, key) {
+        this.employeeRepository.removeEmployee(department, key);
     }
 
-    updateEmployeeStatus(department, index, status) {
-        this.employeeRepository.updateEmployeeStatus(department, index, status);
+    updateEmployeeStatus(department, key, status) {
+        this.employeeRepository.updateEmployeeStatus(department, key, status);
     }
     
-    updateEmployeeRemark(department, index, remark) {
-      this.employeeRepository.updateEmployeeRemark(department, index, remark);
+    updateEmployeeRemark(department, key, remark) {
+      this.employeeRepository.updateEmployeeRemark(department, key, remark);
     }
 
     saveEmployeeInfo(input) {

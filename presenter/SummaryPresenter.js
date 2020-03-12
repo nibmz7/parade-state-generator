@@ -1,5 +1,6 @@
 import EmployeeRepository from '../logic/EmployeeRepository.js';
 import Status from '../logic/Status.js';
+import XlsxPopulate from '../assets/xlsx-populate.min.js';
 
 export default class SummaryPresenter {
   

@@ -1,0 +1,23 @@
+{
+  "name": "parade-state-generator",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nurilyas7/parade-state-generator.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/nurilyas7/parade-state-generator/issues"
+  },
+  "homepage": "https://github.com/nurilyas7/parade-state-generator#readme",
+  "devDependencies": {
+    "@babel/core": "^7.8.7"
+  }
+}

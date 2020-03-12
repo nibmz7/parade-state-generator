@@ -9,7 +9,6 @@ window.onload = () => {
  }
 
 import EmployeeRepository from './logic/EmployeeRepository.js';
-import Employee from './logic/Employee.js';
 import DropdownMenu from './ui/DropdownMenu.js';
 import ViewPager from './ui/ViewPager.js';
 import DepartmentFragment from './ui/DepartmentFragment.js';

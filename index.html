@@ -8,7 +8,7 @@
   <title>HTML</title>
  
   <link rel="stylesheet" href="docs/main.css">
-  <script lang="javascript" src="xlsx-populate.min.js"></script>
+  <script lang="javascript" src="docs/xlsx-populate.min.js"></script>
   <meta charset="utf-8" />
 
 <body>
@@ -17,6 +17,7 @@
             width: 100%;
             height: 100%;
             padding-bottom: 70px;
+            overflow-x: hidden;
             overflow-y: scroll;
             scrollbar-width: none;
             box-sizing: border-box;
@@ -28,7 +29,7 @@
           display: none;
         }
         #add {
-          position: absolute;
+          position: fixed;
           top: 15px;
           right: 20px;
           --button-padding: 3px 10px;
@@ -37,7 +38,7 @@
           transition: all .3s;
         }
         #summary {
-          position: absolute;
+          position: fixed;
           --button-radius: 50px;
           --button-font-size: 1.1rem;
           bottom: 10px;

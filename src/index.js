@@ -1,13 +1,3 @@
-window.onload = () => {
-    var w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
-    var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
-    
-    let root = document.querySelector(':root');
-    root.style.height = h;
-    root.style.width = w;
-    root.style.fontSize = Math.round(h/100);
- }
-
 import EmployeeRepository from './logic/EmployeeRepository.js';
 import DropdownMenu from './ui/DropdownMenu.js';
 import ViewPager from './ui/ViewPager.js';
@@ -30,9 +20,9 @@ const addButton = document.getElementById('add');
 const fragmentHolder = document.querySelector('.fragment-holder');
 fragmentHolder.onscroll = e => {
   if(fragmentHolder.scrollTop > 0) {
-    addButton.style.top = '-50px';
+    addButton.style.right = '-50px';
   } else {
-    addButton.style.top = '15px';
+    addButton.style.right = '20px';
   }
 }
 

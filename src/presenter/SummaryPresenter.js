@@ -19,8 +19,8 @@ export default class SummaryPresenter {
           summary[category][status] = [];
           
         if(employee.remark && employee.remark.length > 0)
-          summary[category][status].push(employee);
-        else summary[category][status].unshift(employee);
+          summary[category][status].unshift(employee);
+        else summary[category][status].push(employee);
       }
     }
     return summary;

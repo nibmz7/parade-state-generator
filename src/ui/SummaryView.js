@@ -1,6 +1,8 @@
 import SummaryPresenter from '../presenter/SummaryPresenter.js';
 import Status from '../logic/Status.js';
 import Utils from '../Utils.js';
+import SectionView from './SectionView.js';
+customElements.define('section-view', SectionView);
 
 const template = `
     <style>
@@ -8,12 +10,13 @@ const template = `
             background: white;
             height: 100%;
             width: 100%;
-            position: absolute;
+            position: fixed;
             top: 0;
             left: 0;
             z-index: 9;
             transition: .5s transform;
             transform: translateY(100%);
+            background: #FAF5FA;
         }
 
         .container.show {
@@ -21,14 +24,21 @@ const template = `
         }
 
         h3 {
+            position: fixed;
+            top: 0;
             margin: 0;
             display: flex;
             justify-content: start;
             padding: 12px 10px;
-            box-shadow: 0px 2px 3px 0px rgba(0,0,0,0.2);
+            width: 100%;
+            background: #FAF5FA;
         }
         
         wc-button {
+          position: fixed;
+          bottom: 0;
+          left: 0;
+          right: 0;
           --button-radius: 0;
           --button-padding: 15px 10px;
           --button-font-size: 1.3rem;
@@ -37,17 +47,16 @@ const template = `
           box-shadow: 0px 2px 3px 2px rgba(0,0,0,0.2);
         }
         
-        .container {
-          height: 100%;
-          display: flex;
-          flex-direction: column;
-        }
-        
-        #list { height: 100%;
+        #list { 
+        height: 100%;
         overflow-y: scroll;
         -webkit-overflow-scrolling: touch;
         scroll-behavior: smooth;
-       // flex: 1;
+        padding-left: 20px;
+        padding-right: 20px;
+        padding-bottom: 120px;
+        box-sizing: border-box;
+        padding-top: 50px;
         }  
         
         .loading {
@@ -67,42 +76,11 @@ const template = `
         .fade-out {
           animation: fade-out 1s;
         }
-        
-        .header {
-          display: flex:
-          justify-content: center;
-          align-items: center;
-          padding: 10px;
-          background: #95a5a6;
-          margin-top: 5px;
-        }
-        
-        .header:first-child {
-          margin-top: 0;
-        }
-        
-        .sub-header {
-          padding: 10px 10px 5px 10px;
-        }
-        
-        .item {
-          padding: 5px 10px;
-          font-size: 0.7rem;
-        }
-        
-        h4, h5, p {
-          margin: 0;
-        }
-        
-        .bold {
-          color: #c0392b;
-          font-weight: 700;
-        }
-        
-    </style>
 
+    </style>
+    
     <div class="container">
-        <h3>X Close</h3>
+        <h3><---</h3>
         <div id="list"></div>
         <wc-button>Export to excel</wc-button>
         
@@ -110,25 +88,6 @@ const template = `
             <h4>Loading</h4>
          </div>
     </div>
-    
-    <template id="header">
-      <div class="header">
-        <h4></h4>
-      </div>
-    </template>
-    
-    <template id="sub-header">
-      <div class="sub-header">
-        <h5></h5>
-      </div>
-    </template>
-    
-    <template id="item"> 
-      <div class="item">
-        <p></p>
-      </div>
-    </template>
-    
 `;
 
 export default class SummaryView extends HTMLElement {
@@ -145,6 +104,7 @@ export default class SummaryView extends HTMLElement {
         this.shadowRoot.querySelector('wc-button').onclick = e => {
           this.downloadFile();
         }
+        this.list = this.shadowRoot.getElementById('list');
     }
     
     close() {
@@ -156,29 +116,10 @@ export default class SummaryView extends HTMLElement {
         let loading = this.shadowRoot.querySelector('.loading');
         loading.style.display ='flex';
         this.shadowRoot.querySelector('.container').classList.add('show');
-        let list = this.shadowRoot.getElementById('list');
-        list.innerHTML = "";
+        this.list.innerHTML = "";
         let data = this.summaryPresenter.getSummary();
         for(let [category, statusTypes] of Object.entries(data)) {
-          let header = this.createHeader(category);
-          let headerTitle = header.querySelector('h4');
-          list.appendChild(header);
-          let regCount = 0;
-          let nsfCount = 0;
-          for(let [status, employees] of Object.entries(statusTypes)) {
-            let subHeader = this.createSubHeader(Status[status].name);
-            list.appendChild(subHeader);
-            for(let employee of employees) {
-              let item = this.createItem(employee);
-              list.appendChild(item);
-              if(employee.isRegular) regCount++;
-              else nsfCount++;
-            }
-          }
-          let headerText = category + " - ";
-          if(nsfCount > 0) headerText += nsfCount + " NSF";
-          if(regCount > 0) headerText += " & " + regCount + " REG";
-          headerTitle.textContent = headerText;
+          this.createCategory(category, statusTypes);
         }
         
         this.summaryPresenter.downloadToExcel()
@@ -197,36 +138,59 @@ export default class SummaryView extends HTMLElement {
       a.href = this.fileUrl;
       a.download = this.fileName;
       document.body.appendChild(a);
-      a.click();
+      a.click(); 
       a.remove();
     }
     
-    createHeader(category) {
-      let template = this.shadowRoot.getElementById('header');
-      let clone = template.content.cloneNode(true);
-      let title = clone.querySelector('h4');
-      title.textContent = category;
-      return clone;
-    }
-    
-    createSubHeader(status) {
-      let template = this.shadowRoot.getElementById('sub-header');
-      let clone = template.content.cloneNode(true);
-      let title = clone.querySelector('h5');
-      title.textContent = status;
-      return clone;
-    }
-    
-    createItem(employee) {
-      let template = this.shadowRoot.getElementById('item');
-      let clone = template.content.cloneNode(true); 
-      let name = clone.querySelector('p');
-      if(employee.remark.length > 0)
-        name.classList.add('bold');
-      let text = employee.rank + " " + employee.name;
-      if(employee.remark && employee.remark.length > 0) 
-       text += " - " + employee.remark
-      name.textContent = text;
-      return clone;
+    createCategory(category, statusTypes) {
+      const itemTemplate = `
+        .sub-header {
+          margin-top: 10px;
+          text-align: center;
+          font-weight: 900;
+          color: red;
+        }
+        .item {
+         font-weight: 600;
+         padding: 5px 15px;
+         font-size: 0.9rem;
+        }
+        .item:last-child {
+          padding-top: 5px;
+          padding-bottom: 15px;
+        }
+        
+        .bold {
+          font-weight: 700;
+          color: #EAB543;
+        }
+      `;
+      
+      let regCount = 0;
+      let nsfCount = 0;
+      let sectionView = document.createElement('section-view');
+      sectionView.setHeader(category);
+      sectionView.addStyle(itemTemplate);
+      for (let [status, employees] of Object.entries(statusTypes)) {
+        let statusName = Status[status].name;
+        let subHeader = document.createElement('div');
+        subHeader.classList.add('sub-header');
+        subHeader.textContent = statusName;
+        sectionView.addItem(subHeader);
+        for (let employee of employees) {
+          let item = document.createElement('div');
+          item.classList.add('item');
+          if (employee.remark.length > 0) item.classList.add('bold');
+          let info = employee.rank + " " + employee.name;
+          if (employee.remark && employee.remark.length > 0)
+            info += " - " + employee.remark;
+          item.textContent = info;
+          sectionView.addItem(item);
+          if (employee.isRegular) regCount++;
+          else nsfCount++;
+        }
+      }
+      sectionView.setTotal(regCount, nsfCount);
+      this.list.appendChild(sectionView);
     }
 }

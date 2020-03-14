@@ -18,17 +18,13 @@ const template = `
       background: #F0F0F0;
     }
     
-    .item:first-child {
-      border-top-left-radius: 15px;
-      border-top-right-radius: 15px;
-    }
-    
     .item:last-child {
       border-bottom-left-radius: 15px;
       border-bottom-right-radius: 15px;
     }
     
     #name {
+      text-transform: capitalize;
       color: #323232;
       font-weight: 700;
     }
@@ -40,20 +36,34 @@ const template = `
     }
     
     #header {
-      color: #8C8C8C;
+      color: #828282;
       text-transform: capitalize;
     }
     
-    #list {
+    #card {
       border-radius: 15px;
       background: white;
       box-shadow: 0px 2px 50px 0px rgba(209,202,209,1);
+    }
+    
+    #strength {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 10px;
+      font-weight: 900;
+      background: #34495e;
+      border-top-left-radius: 15px;
+      border-top-right-radius: 15px;
+      color:white;
     }
   </style>
   
   <div class="page">
     <h3 id="header"></h3>
-    <div id="list">
+    <div id="card">
+      <div id="strength">0 Present</div>
+      <div id="list"></div>
     </div>
   </div>
   
@@ -73,6 +83,11 @@ export default class DepartmentFragment extends HTMLElement {
     this.shadowRoot.innerHTML = template;
     this.header = this.shadowRoot.getElementById('header');
     this.list = this.shadowRoot.getElementById('list');
+    this.strengthInfo = this.shadowRoot.getElementById('strength');
+    this.employees = {};
+    this.presentNsf = 0;
+    this.presentReg = 0;
+    this.present = {};
   }
 
   setPresenter(presenter) {
@@ -85,6 +100,7 @@ export default class DepartmentFragment extends HTMLElement {
   }
   
   addEmployee(key, employee, index) {    
+    this.employees[key] = employee;
     let newNode = this.createItem(key, employee, index);
     let referenceNode = this.list.children[index];
     this.list.insertBefore(
@@ -96,7 +112,7 @@ export default class DepartmentFragment extends HTMLElement {
   createItem(key, employee, index) {
       let employeeName = employee.rank + ' ' + employee.name;
       let remark = "";
-      if(employee.remark && employee.remark.length > 0)
+      if(employee.remark.length > 0)
         remark = ` (${employee.remark})`;
       
       let template = this.shadowRoot.getElementById('item');
@@ -106,18 +122,15 @@ export default class DepartmentFragment extends HTMLElement {
       let name = clone.getElementById('name');
       let status = clone.getElementById('status');
       item.setAttribute('key', key);
-      item.setAttribute('status', employee.status);
-      if(employee.remark)
-      item.setAttribute('remark', employee.remark);
     
       name.textContent = employeeName;
       status.textContent = STATUS[employee.status].name + remark;
 
       Utils.onclick(item, e => {
-        employee.status = item.getAttribute('status');
-        employee.remark = item.getAttribute('remark');
-        this.openDetails(key, employee);
+        this.openDetails(key, this.employees[key]);
       });
+      
+      this.checkPresent(key);
 
       return clone;
   }
@@ -128,25 +141,28 @@ export default class DepartmentFragment extends HTMLElement {
   
   onRemarkChanged(key, remark) {
     let item = this.getListItem(key);
-    item.setAttribute('remark', remark);
-    let statusIndex = item.getAttribute('status');
+    let employee = this.employees[key];
+    employee.remark = remark;
     let remarkText = "";
     if (remark && remark.length > 0)
       remarkText = ` (${remark})`;
     let status = item.querySelector('#status');
-    status.textContent = STATUS[statusIndex].name + remarkText;
+    status.textContent = STATUS[employee.status].name + remarkText;
     this.presenter.updateEmployeeRemark(this.department, key, remark);
   }
   
   onStatusChanged(key, statusIndex) {
     let item = this.getListItem(key);
-    item.setAttribute('status', statusIndex);
+    let employee = this.employees[key];
+    employee.status = statusIndex;
     let status = item.querySelector('#status');
     status.textContent = STATUS[statusIndex].name;
     this.presenter.updateEmployeeStatus(this.department, key, statusIndex);
+    this.checkPresent(key);
   }
 
   onDeleteEmployee(key) {
+    delete this.employees[key];
     let item = this.getListItem(key);
     item.remove();
     this.presenter.removeEmployee(this.department, key);
@@ -155,6 +171,26 @@ export default class DepartmentFragment extends HTMLElement {
   onSaveEmployee(key, input) {
     this.onDeleteEmployee(key);
     this.presenter.saveEmployeeInfo(input);
+  }
+  
+  checkPresent(key) {
+    let employee = this.employees[key];
+    let isRegular = employee.isRegular;
+    let isPresent = employee.status == 1;
+      if(!isPresent) {
+        if(!this.present[key]) return;
+        this.present[key] = false;
+        if(isRegular) this.presentReg--;
+        else this.presentNsf--;
+      } else {
+        if(this.present[key]) return;
+        this.present[key] = true;
+        if(isRegular) this.presentReg++;
+        else this.presentNsf++;
+      }
+      let total = this.presentNsf + this.presentReg;
+      let strength = `${total} Present ~ ${this.presentReg} Reg + ${this.presentNsf} Nsf`;
+      this.strengthInfo.textContent = strength;
   }
   
   openDetails(key, employee) {

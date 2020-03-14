@@ -30,12 +30,10 @@ wc-button {
 
 html,
 body {
+    overflow: hidden;
     height: 100%;
-    display: flex;
-    flex-direction: column;
     padding: 0;
     margin: 0;
-    overflow: hidden;
     --color-primary: #FF3838;
     --color-primary-dark: #E90000;
     font-family: 'Quicksand';
@@ -44,4 +42,8 @@ body {
     --primary-blue: #0652DD;
     --primary-blue-dark: #043DA5;
     --primary-blue-rgb: 6,82,221;
+}
+
+::-webkit-scrollbar {
+  display: none;
 }

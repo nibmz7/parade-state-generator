@@ -12,7 +12,7 @@ export default class EmployeeRepository extends EventTarget {
     this.db.on('ready', () => {
       this.db.getEmployees();
     });
-    this.db.on('empty', () => {
+    this.db.on('empty', () => { 
       this.emit('empty');
     });
   }
@@ -32,7 +32,7 @@ export default class EmployeeRepository extends EventTarget {
      else return false;
   }
 
-  employeeAdded(e) {
+  employeeAdded(e) { 
     let {key, employee} = e.detail;
     let department = employee.department;
     if(!this.list[department]) this.list[department] = [];

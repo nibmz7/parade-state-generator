@@ -4,8 +4,7 @@ import Utils from '../Utils.js';
 const template = `
   <style>
     .page {
-      width: 100vw;
-      height: 100%;
+     
     }
     p {
       margin: 0;
@@ -19,6 +18,18 @@ const template = `
       background: grey;
     }
     
+    .item:first-child {
+      border-top-left-radius: 15px;
+      border-top-right-radius: 15px;
+    }
+    
+    .item:last-child {
+      border-bottom-left-radius: 15px;
+      border-bottom-right-radius: 15px;
+    }
+    
+    
+    
     #name {
       font-weight: 700;
     }
@@ -27,9 +38,21 @@ const template = `
       font-size: 0.8rem;
       font-weight: 400;
     }
+    
+    #header {
+      color: #8C8C8C;
+      text-transform: capitalize;
+    }
+    
+    #list {
+      border-radius: 15px;
+      background: white;
+      box-shadow: 0px 2px 50px 0px rgba(209,202,209,1);
+    }
   </style>
   
   <div class="page">
+    <h3 id="header"></h3>
     <div id="list">
     </div>
   </div>
@@ -48,6 +71,7 @@ export default class DepartmentFragment extends HTMLElement {
     super();
     this.attachShadow({mode: 'open'});
     this.shadowRoot.innerHTML = template;
+    this.header = this.shadowRoot.getElementById('header');
     this.list = this.shadowRoot.getElementById('list');
   }
 
@@ -57,6 +81,7 @@ export default class DepartmentFragment extends HTMLElement {
   
   setDepartment(department) {
     this.department = department;
+    this.header.textContent = department;
   }
   
   addEmployee(key, employee, index) {    

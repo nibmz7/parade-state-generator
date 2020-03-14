@@ -48,13 +48,13 @@ const Employee = {
       let name = "";
       while(nameIndex < lastIndex) {
         if(nameIndex > 1) name += ", ";
-        name += tokens[nameIndex].trim().toUpperCase();
+        name += tokens[nameIndex].trim().toLowerCase();
         nameIndex++;
       }
       let rank = tokens[0].trim().toUpperCase();
       let rankInt = rankToInt(rank);
       if(rankInt === undefined) throw Error;
-      let department = tokens[lastIndex].trim().toUpperCase();
+      let department = tokens[lastIndex].trim().toLowerCase();
       let status = 0;
       let employee = {
         rank, rankInt, name, department, status, isRegular, remark: ''

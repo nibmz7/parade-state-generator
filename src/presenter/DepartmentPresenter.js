@@ -4,22 +4,13 @@ export default class DepartmentPresenter {
     constructor() {
         this.employeeRepository = EmployeeRepository.getInstance();
         this.fragments = {};
-        this.viewpager = document.querySelector('view-pager');
-        this.dropdownMenu = document.querySelector('dropdown-menu');
+        this.fragmentHolder = document.querySelector('.fragment-holder');
         this.employeeRepository.on('employee-added', this.addEmployee.bind(this));
-
-        this.employeeRepository.on('department-removed', this.removeDepartment.bind(this));
-
-        this.dropdownMenu.addEventListener("onChange", e => {
-            let index = e.detail.next;
-            this.viewpager.setCurrentItem(index);
-        });
     }
     
     removeDepartment(e) {
       let department = e.detail;
       this.fragments[department].remove();
-      this.dropdownMenu.remove(department);
       delete this.fragments[department];
     }
 
@@ -31,8 +22,7 @@ export default class DepartmentPresenter {
             fragment.setPresenter(this);
             fragment.setDepartment(department);
             this.fragments[department] = fragment;
-            this.viewpager.add(fragment);
-            this.dropdownMenu.add(department);
+            this.fragmentHolder.appendChild(fragment);
         }
         this.fragments[department].addEmployee(key, employee, index);
     }

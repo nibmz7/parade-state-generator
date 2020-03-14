@@ -30,7 +30,7 @@ const template = `
     p {
       margin: 0;
       padding: 10px 15px;
-      font-size: 25px;
+      font-size: 1rem;
       cursor: pointer;
       touch-action: none;
       transition: .2s background;
@@ -122,7 +122,7 @@ export default class DropdownMenu extends HTMLElement {
       this.setCurrentItem(item);
       this.menu.classList.remove('appear');
       let index = this.options.findIndex(el => el == item);
-      let data = {next: index};
+      let data = {next: item};
       let event = new CustomEvent("onChange", { detail: data });
       this.dispatchEvent(event);
     }

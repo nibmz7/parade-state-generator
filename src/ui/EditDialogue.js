@@ -87,15 +87,14 @@ export default class EditDialogue extends Dialogue {
             else text = input.value;
             this.employeeRepository.addEmployees(text);
         }
+        
+        this.employeeRepository.on('employee-added',
+          e => {
+            this.close();
+         });
     }
     
     setCancellable(isCancellable) {
       this.isCancellable = isCancellable;
-      if(!isCancellable) {
-        this.employeeRepository.on('employee-added', 
-          e => {
-            this.close();
-        });
-      }
     }
 }

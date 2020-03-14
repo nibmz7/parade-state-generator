@@ -5,6 +5,7 @@ const template = `
     :host {
       --button-color: var(--color-primary);
       --button-color-dark: var(--color-primary-dark);
+      --button-color-rgb: var(--color-primary-rgb);
       --button-radius: 5px;
     }
     
@@ -35,6 +36,10 @@ const template = `
     
     :host([type="plain"]) > button:active {
       background: rgba(0,0,0,.1);
+    }
+    
+    :host([type="glow"]) > button {
+      box-shadow: 0 4px 6px -1px rgba(var(--button-color-rgb), 0.2), 0 2px 4px -1px rgba(var(--button-color-rgb), 0.12);
     }
     
     button {

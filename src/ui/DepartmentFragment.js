@@ -15,7 +15,7 @@ const template = `
     }
     
     .item:active {
-      background: grey;
+      background: #F0F0F0;
     }
     
     .item:first-child {
@@ -28,15 +28,15 @@ const template = `
       border-bottom-right-radius: 15px;
     }
     
-    
-    
     #name {
+      color: #323232;
       font-weight: 700;
     }
     
     #status {
+      color: #878787;
       font-size: 0.8rem;
-      font-weight: 400;
+      font-weight: 600;
     }
     
     #header {

@@ -26,8 +26,17 @@ customElements.define('edit-dialogue', EditDialogue);
 customElements.define('employee-dialogue', EmployeeDialogue);
 customElements.define('summary-view', SummaryView);
 
+const addButton = document.getElementById('add');
+const fragmentHolder = document.querySelector('.fragment-holder');
+fragmentHolder.onscroll = e => {
+  if(fragmentHolder.scrollTop > 0) {
+    addButton.style.top = '-50px';
+  } else {
+    addButton.style.top = '15px';
+  }
+}
 
-document.getElementById('add').onclick = e => {
+addButton.onclick = e => {
   let dialogue = document.createElement('edit-dialogue');
   dialogue.isCancellable = true;
   document.body.appendChild(dialogue);

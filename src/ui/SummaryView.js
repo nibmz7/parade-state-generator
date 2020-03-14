@@ -17,21 +17,36 @@ const template = `
             transition: .5s transform;
             transform: translateY(100%);
             background: #FAF5FA;
+            scrollbar-width: none;
         }
 
         .container.show {
             transform: translateY(0%);
         }
 
-        h3 {
+        #toolbar {
             position: fixed;
             top: 0;
+            left: 0;
+            right: 0;
             margin: 0;
             display: flex;
-            justify-content: start;
+            justify-content: space-between;
+            flex-direction: row;
             padding: 12px 10px;
-            width: 100%;
-            background: #FAF5FA;
+            background: rgba(250, 245, 250, 0.9);
+            transition: .5s all;
+        }
+        
+        #toolbar > p {
+          padding: 0;
+          margin: 0;
+          font-weight: 900;
+        }
+        
+        #toolbar > h4 {
+          padding: 0;
+          margin: 0px 10px 0px 0px;
         }
         
         wc-button {
@@ -50,14 +65,17 @@ const template = `
         #list { 
         height: 100%;
         overflow-y: scroll;
-        -webkit-overflow-scrolling: touch;
-        scroll-behavior: smooth;
         padding-left: 20px;
         padding-right: 20px;
-        padding-bottom: 120px;
+        padding-bottom: 80px;
         box-sizing: border-box;
-        padding-top: 50px;
+        padding-top: 40px;
+        scrollbar-width: none;
         }  
+        
+        #list::-webkit-scrollbar {
+            display: none;
+        }
         
         .loading {
           position: absolute;
@@ -76,11 +94,15 @@ const template = `
         .fade-out {
           animation: fade-out 1s;
         }
+       
 
     </style>
     
     <div class="container">
-        <h3><---</h3>
+        <div id="toolbar">
+          <p>Total strength</p>
+           <h4>X</h4>
+         </div>
         <div id="list"></div>
         <wc-button>Export to excel</wc-button>
         
@@ -97,14 +119,23 @@ export default class SummaryView extends HTMLElement {
         this.summaryPresenter = new SummaryPresenter();
         this.attachShadow({mode: 'open'});
         this.shadowRoot.innerHTML = template;
-        let h3 = this.shadowRoot.querySelector('h3');
-        Utils.onclick(h3, e => {
+        let toolbar = this.shadowRoot.getElementById('toolbar');
+        this.titleText = toolbar.querySelector('p');
+        Utils.onclick(toolbar, e => {
           this.close();  
         });
         this.shadowRoot.querySelector('wc-button').onclick = e => {
           this.downloadFile();
         }
         this.list = this.shadowRoot.getElementById('list');
+         
+        this.list.onscroll = e => {
+          if (this.list.scrollTop > 0) {
+            toolbar.style.boxShadow = '3px 0px 3px 3px rgba(50,50,50,0.3)';
+          } else {
+            toolbar.style.boxShadow = '0px 0px 0px 0px rgba(0,0,0,0)';
+          }
+        }
     }
     
     close() {
@@ -118,10 +149,12 @@ export default class SummaryView extends HTMLElement {
         this.shadowRoot.querySelector('.container').classList.add('show');
         this.list.innerHTML = "";
         let data = this.summaryPresenter.getSummary();
+        let total = 0;
         for(let [category, statusTypes] of Object.entries(data)) {
-          this.createCategory(category, statusTypes);
+          let count = this.createCategory(category, statusTypes);
+          total += count;
         }
-        
+        this.titleText.textContent = `Total strength: ${total}`;
         this.summaryPresenter.downloadToExcel()
           .then(file => {
             this.fileUrl = file.url;
@@ -192,5 +225,7 @@ export default class SummaryView extends HTMLElement {
       }
       sectionView.setTotal(regCount, nsfCount);
       this.list.appendChild(sectionView);
+      let total = regCount + nsfCount;
+      return total;
     }
 }

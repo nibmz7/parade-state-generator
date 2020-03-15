@@ -96,7 +96,7 @@ export default class SummaryPresenter {
     let blob = await workbook.outputAsync()
                 
     let url = window.URL.createObjectURL(blob);
-    let name = `SBW PARADE STATE ${dateText}`;
+    let name = `SBW PARADE STATE ${dateText}.xlsx`;
     return {name, url};
   }
   

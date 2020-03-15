@@ -74,18 +74,20 @@ export default class EditDialogue extends Dialogue {
 
         button.onclick = e => {
             let text;
-            if(input.value.length == 0) 
-            text = `LCP, NUR ILYAS, SIGNAL WING\n
-            MAJ, JOHN DOE, MWP BRANCH, true\n
-            PTE, BILLIE JOE, LOG BRANCH\n
-            CPL, HARRY POTTER, SIGNAL WING\n
-            PTE, LARRY JONES, SIGNAL WING\n
-            LCP, JIM BOB, LOG BRANCH\n
-            DX10, ROY JONES, LOG BRANCH, true\n
-            PTE, WILLIAM OSBORNE, MWP BRANCH\n
-            LTC, Jim, MWP BRANCH, true`;
-            else text = input.value;
-            this.employeeRepository.addEmployees(text);
+            if(input.value.length == 0) return;
+                // text = `LCP, NUR ILYAS, SIGNAL WING\n
+                // MAJ, JOHN DOE, MWP BRANCH, true\n
+                // PTE, BILLIE JOE, LOG BRANCH\n
+                // CPL, HARRY POTTER, SIGNAL WING\n
+                // PTE, LARRY JONES, SIGNAL WING\n
+                // LCP, JIM BOB, LOG BRANCH\n
+                // DX10, ROY JONES, LOG BRANCH, true\n
+                // PTE, WILLIAM OSBORNE, MWP BRANCH\n
+                // LTC, Jim, MWP BRANCH, true`;
+            else {
+                text = input.value;
+                this.employeeRepository.addEmployees(text);
+            }
         }
         
         this.employeeRepository.on('employee-added',

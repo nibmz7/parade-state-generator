@@ -1,21 +1,12 @@
+const hasPointerEvent = 'PointerEvent' in window;
+
 const Utils = {
   onclick: function(target, callback) {
-    let element;
-    //https://stackoverflow.com/questions/5748476/javascript-equivalent-of-mouseleave-for-touch-interactions
-    target.onpointerdown = e => {
-      target.classList.add('active');
-      element = document.elementFromPoint(e.pageX,e.pageY);
+    if (hasPointerEvent) {
+      target.onpointerup = callback;
+    } else {
+      target.onclick = callback;
     }
-    target.onpointermove = e => {
-      
-    }
-    target.onpointerup = e => {
-      target.classList.remove('active');
-      if(element === document.elementFromPoint(e.pageX,e.pageY)) {
-        callback(e);
-      }
-    }
-
   },
 
   animate: function(element, animation, callback) {

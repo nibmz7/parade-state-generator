@@ -187,6 +187,7 @@ export default class SummaryView extends HTMLElement {
          font-weight: 600;
          padding: 5px 15px;
          font-size: 0.9rem;
+         text-transform: capitalize;
         }
         .item:last-child {
           padding-top: 5px;

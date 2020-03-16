@@ -66,12 +66,12 @@ export default class SummaryPresenter {
     let strength = index + '/' + list.length;
 
     let date = new Date();
-    let month = date.getMonth();
+    let month = date.getMonth() + 1;
     let day = String(date.getDate()).padStart(2, '0');
     let year = date.getFullYear();
     let dateText = day + '/'+ month + '/' + year;
     let header = [
-      ["SBW PLC Strength", "", ""],
+      ["SBW PLC Strength", "", "", ""],
       [],
       ["Date", dateText],
       ["Total Strength", strength],
@@ -79,11 +79,16 @@ export default class SummaryPresenter {
     ];
     
     delete summary[1];
+    let maxLength = 0;
     for (let [status, employees] of Object.entries(summary)) {
       output.push([]);
       let startIndex = output.length;
       for (let employee of employees) {
-        output.push(['', ++index, toName(employee)]);
+        let name = toName(employee);
+        if(name.length > maxLength) maxLength = name.length;
+        let row = ['', ++index, name];
+        if(status == 17) row.push(employee.remark);
+        output.push(row);
       }
       output[startIndex][0] = `*${Status[status].fullName}*`;
     }
@@ -91,6 +96,9 @@ export default class SummaryPresenter {
             // Modify the workbook.
     workbook.sheet(0).name("Attendance sheet");
     workbook.sheet(0).column("A").style({ bold: true, italic: true });
+    workbook.sheet(0).column("A").width(21);
+    workbook.sheet(0).column("B").width(10);
+    workbook.sheet(0).column("C").width(maxLength + 5);
     workbook.sheet(0).cell("A1").value((header.concat(output)));
 
     let blob = await workbook.outputAsync()

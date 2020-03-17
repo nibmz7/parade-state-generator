@@ -12,6 +12,7 @@ const template = `
     .item {
       padding: 10px 15px;
       transition: .3s background;
+      cursor: pointer;
     }
     
     .item:active {

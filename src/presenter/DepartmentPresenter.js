@@ -14,8 +14,8 @@ export default class DepartmentPresenter {
       delete this.fragments[department];
     }
 
-    addEmployee(e) {
-        let {key, employee, index} = e.detail;
+    addEmployee(data) {
+        let {key, employee, index} = data;
         let department = employee.department;
         if(!this.fragments[department]) {
             let fragment = document.createElement('department-fragment');

@@ -1,8 +1,9 @@
 import AttendanceDb from './AttendanceDb.js';
 import Employee from './Employee.js';
+import EventDispatcher from './EventDispatcher.js';
 
 let instance;
-export default class EmployeeRepository extends EventTarget {
+export default class EmployeeRepository extends EventDispatcher {
   
   constructor() {
     super();
@@ -32,8 +33,8 @@ export default class EmployeeRepository extends EventTarget {
      else return false;
   }
 
-  employeeAdded(e) { 
-    let {key, employee} = e.detail;
+  employeeAdded(data) { 
+    let {key, employee} = data;
     let department = employee.department;
     if(!this.list[department]) this.list[department] = [];
     let length = this.list[department].length;
@@ -80,15 +81,6 @@ export default class EmployeeRepository extends EventTarget {
   addEmployees(string) {
     let employees = Employee.toList(string);
     this.db.addEmployees(employees);
-  }
-
-  emit(type, data) {
-    let event = new CustomEvent(type, {detail: data});
-    this.dispatchEvent(event);
-  }
-  
-  on(type, callback) {
-    this.addEventListener(type, callback);
   }
   
 }

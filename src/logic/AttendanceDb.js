@@ -1,4 +1,6 @@
-export default class AttendanceDb extends EventTarget {
+import EventDispatcher from './EventDispatcher.js';
+
+export default class AttendanceDb extends EventDispatcher {
   
   constructor() { 
     super();
@@ -37,7 +39,7 @@ export default class AttendanceDb extends EventTarget {
     let objectStore = this.db.transaction('employees').objectStore('employees');
     let request = objectStore.index('department').openCursor();
     request.onsuccess = e => {
-      let cursor = event.target.result;
+      let cursor = e.target.result;
       if (cursor) {
           let employee = cursor.value;
           let key = cursor.primaryKey;
@@ -71,15 +73,6 @@ export default class AttendanceDb extends EventTarget {
   
   deleteEmployee(key) {
     this.db.transaction('employees', 'readwrite').objectStore('employees').delete(key);
-  }
-
-  emit(type, data) {
-    let event = new CustomEvent(type, {detail: data});
-    this.dispatchEvent(event);
-  }
-  
-  on(type, callback) {
-    this.addEventListener(type, callback);
   }
 
 } 

@@ -7,17 +7,16 @@ customElements.define('section-view', SectionView);
 const template = `
     <style>
         .container {
-            background: white;
-            height: 100%;
-            width: 100%;
-            position: absolute;
+            position: fixed;
+            bottom: 0;
             top: 0;
             left: 0;
+            right: 0;
             z-index: 9;
-            transition: .5s transform;
+            transition: .5s transform ease-in-out;
             transform: translateY(100%);
             background: #FAF5FA;
-            scrollbar-width: none;
+            box-shadow: rgba(119, 116, 116, 0.23) -1px 1px 2px 3px;
         }
 
         .container.show {
@@ -25,17 +24,17 @@ const template = `
         }
 
         #toolbar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            margin: 0;
-            display: flex;
-            justify-content: space-between;
-            flex-direction: row;
-            padding: 12px 10px;
-            background: rgba(250, 245, 250, 0.9);
-            transition: .5s all;
+          position: fixed;
+          top: 0;
+          left: 0;
+          right: 0;
+          margin: 0;
+          display: flex;
+          justify-content: space-between;
+          flex-direction: row;
+          padding: 12px 10px;
+          background: rgba(250, 245, 250, 0.9);
+          transition: .5s all;
         }
         
         #toolbar > p {
@@ -63,39 +62,20 @@ const template = `
         }
         
         #list { 
-        height: 100%;
-        overflow-y: scroll;
-        padding-left: 20px;
-        padding-right: 20px;
-        padding-bottom: 80px;
-        box-sizing: border-box;
-        padding-top: 40px;
-        scrollbar-width: none;
+          height: 99%;
+          width: 100%;
+          overflow-x: hidden;
+          overflow-y: scroll;
+          padding-left: 20px;
+          padding-right: 20px;
+          padding-bottom: 70px;
+          box-sizing: border-box;
+          padding-top: 40px;
         }  
         
         #list::-webkit-scrollbar {
             display: none;
         }
-        
-        .loading {
-          position: absolute;
-          background: white;
-          height: 100%;
-          width: 100%;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-        }
-        
-        @keyframes fade-out {
-          to {opacity: 0;}
-        }
-        
-        .fade-out {
-          animation: fade-out 1s;
-        }
-       
-
     </style>
     
     <div class="container">
@@ -105,10 +85,6 @@ const template = `
          </div>
         <div id="list"></div>
         <wc-button>Export to excel</wc-button>
-        
-         <div class="loading">
-            <h4>Loading</h4>
-         </div>
     </div>
 `;
 
@@ -144,36 +120,29 @@ export default class SummaryView extends HTMLElement {
     }
 
     show() {
-        let loading = this.shadowRoot.querySelector('.loading');
-        loading.style.display ='flex';
         this.shadowRoot.querySelector('.container').classList.add('show');
         this.list.innerHTML = "";
         let summary = this.summaryPresenter.getSummary();
-        let category = '';
         let list = [];
         for(let status in summary.list) {
           if(!summary.list[status]) continue;
-          let statusCat = Status[status].category;
-          if(category != statusCat) {
-            if(list.length > 0) {
-              this.createCategory(category, list);
-            }
-            category = statusCat;
-            list = [];
-          }
+          let currCat = Status[status].category;
+          let nextCat = Status[status+1] ? Status[status+1].category : '';
           for(let employee of summary.list[status]) {
             list.push(employee);
           }
+          if(currCat != nextCat) {
+            if(list.length > 0) {
+              this.createCategory(currCat, list);
+              list = [];
+            }
+          }
         }
-        this.titleText.textContent = `Total: ${summary.total} ~ Present: ${summary.present} ~ Current: ${summary.current}`;
+        this.titleText.textContent = `Total: ${summary.total} ~ Present: ${summary.present}  Current: ${summary.current}`;
         this.summaryPresenter.downloadToExcel(summary.list, summary.total, summary.present)
           .then(file => {
             this.fileUrl = file.url;
             this.fileName = file.name;
-            Utils.animate(loading, 'fade-out' ,() => {
-              loading.style.display = 'none';
-              loading.classList.remove('fade-out');
-            });
           });
     }
     

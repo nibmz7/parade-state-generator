@@ -28,7 +28,7 @@ export default class SummaryPresenter {
         let status = employee.status;
         if(status == 1) {
           present++;
-          if(employee.remark.length == 0) current++;
+          if(!employee.isRegular && employee.remark.length == 0) current++;
         }
         if(!list[status]) list[status] = [];
         list[status].push(employee);

@@ -28,7 +28,7 @@ export default class SummaryPresenter {
         let status = employee.status;
         if(status == 1) {
           present++;
-          if(employee.remark.length == 0) current++;
+          if(!employee.isRegular && employee.remark.length == 0) current++;
         }
         if(!list[status]) list[status] = [];
         list[status].push(employee);
@@ -43,8 +43,8 @@ export default class SummaryPresenter {
   async downloadToExcel(summary, total, present) {
     
     const toName = a => {
-      let name = a.rank + ' ' + a.name;
-      return this.capitalizeWords(name);
+      let name = a.rank + ' ' + this.capitalizeWords(a.name);
+      return name;
     }
 
     let strength = present + '/' + total;

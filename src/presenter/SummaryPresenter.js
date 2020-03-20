@@ -8,29 +8,8 @@ export default class SummaryPresenter {
   }
   
   getSummary() {
-    let summary = {};
     let data = this.employeeRepository.list;
-    for (let [department, employees] of Object.entries(data)) {
-      for (let {key,employee} of employees) {
-        let status = employee.status;
-        let category = Status[status].category;
-        if(!summary[category]) summary[category] = {};
-        if(!summary[category][status]) 
-          summary[category][status] = [];
-          
-        if(employee.remark && employee.remark.length > 0)
-          summary[category][status].unshift(employee);
-        else summary[category][status].push(employee);
-      }
-    }
-    return summary;
-  }
 
-  //bad bad code 
-  async downloadToExcel() {
-    let data = this.employeeRepository.list;
-    let list = [];
-    let summary = {};
     const compare = (a,b) => {
 
         if (a.rankInt < b.rankInt) return -1;
@@ -41,29 +20,34 @@ export default class SummaryPresenter {
 
         return 0;
     }
-    const toName = a => a.rank + ' ' + a.name;
+    
+    let list = [];
+    let total = 0, present = 0, current = 0;
     for (let [department, employees] of Object.entries(data)) {
       for (let {key,employee} of employees) {
-        list.push(employee);
+        let status = employee.status;
+        if(status == 1) {
+          present++;
+          if(employee.remark.length == 0) current++;
+        }
+        if(!list[status]) list[status] = [];
+        list[status].push(employee);
+        list[status].sort(compare);
+        total++;
       }
     }
-    list.sort(compare);
-    for(let employee of list) {
-      let status = employee.status;
-      if(status == 0) status = 17;
-      if(!summary[status]) summary[status] = [];
-      summary[status].push(employee);
-    }
-    let index = 0;
-    let output = [];
-    if(summary[1]) {
-      for(let employee of summary[1]) {
-        output.push(['', ++index, toName(employee)]);
-      }
-      output[0][0] = "*Present*";
+    return {total, present, current, list};
+  }
+
+  //bad bad code 
+  async downloadToExcel(summary, total, present) {
+    
+    const toName = a => {
+      let name = a.rank + ' ' + a.name;
+      return this.capitalizeWords(name);
     }
 
-    let strength = index + '/' + list.length;
+    let strength = present + '/' + total;
 
     let date = new Date();
     let month = date.getMonth() + 1;
@@ -74,20 +58,21 @@ export default class SummaryPresenter {
       ["SBW PLC Strength", "", "", ""],
       [],
       ["Date", dateText],
-      ["Total Strength", strength],
-      [],
+      ["Total Strength", strength]
     ];
     
-    delete summary[1];
     let maxLength = 0;
-    for (let [status, employees] of Object.entries(summary)) {
+    let output = [];
+    let index = 0;
+    for (let status in summary) {
+      if(!summary[status]) continue;
       output.push([]);
       let startIndex = output.length;
-      for (let employee of employees) {
+      for (let employee of summary[status]) {
         let name = toName(employee);
         if(name.length > maxLength) maxLength = name.length;
         let row = ['', ++index, name];
-        if(status == 17) row.push(employee.remark);
+        if(status == 17 || status == 4) row.push(employee.remark);
         output.push(row);
       }
       output[startIndex][0] = `*${Status[status].fullName}*`;
@@ -106,6 +91,12 @@ export default class SummaryPresenter {
     let url = window.URL.createObjectURL(blob);
     let name = `SBW PARADE STATE ${dateText}.xlsx`;
     return {name, url};
+  }
+
+  capitalizeWords(str) {
+    return str.replace(/\w\S*/g, txt => {
+      return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+    });
   }
   
 } 

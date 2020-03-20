@@ -10,7 +10,7 @@ const template = `
             background: white;
             height: 100%;
             width: 100%;
-            position: fixed;
+            position: absolute;
             top: 0;
             left: 0;
             z-index: 9;
@@ -148,14 +148,25 @@ export default class SummaryView extends HTMLElement {
         loading.style.display ='flex';
         this.shadowRoot.querySelector('.container').classList.add('show');
         this.list.innerHTML = "";
-        let data = this.summaryPresenter.getSummary();
-        let total = 0;
-        for(let [category, statusTypes] of Object.entries(data)) {
-          let count = this.createCategory(category, statusTypes);
-          total += count;
+        let summary = this.summaryPresenter.getSummary();
+        let category = '';
+        let list = [];
+        for(let status in summary.list) {
+          if(!summary.list[status]) continue;
+          let statusCat = Status[status].category;
+          if(category != statusCat) {
+            if(list.length > 0) {
+              this.createCategory(category, list);
+            }
+            category = statusCat;
+            list = [];
+          }
+          for(let employee of summary.list[status]) {
+            list.push(employee);
+          }
         }
-        this.titleText.textContent = `Total strength: ${total}`;
-        this.summaryPresenter.downloadToExcel()
+        this.titleText.textContent = `Total: ${summary.total} ~ Present: ${summary.present} ~ Current: ${summary.current}`;
+        this.summaryPresenter.downloadToExcel(summary.list, summary.total, summary.present)
           .then(file => {
             this.fileUrl = file.url;
             this.fileName = file.name;
@@ -175,7 +186,7 @@ export default class SummaryView extends HTMLElement {
       a.remove();
     }
     
-    createCategory(category, statusTypes) {
+    createCategory(category, employees) {
       const itemTemplate = `
         .sub-header {
           margin-top: 10px;
@@ -205,24 +216,27 @@ export default class SummaryView extends HTMLElement {
       let sectionView = document.createElement('section-view');
       sectionView.setHeader(category);
       sectionView.addStyle(itemTemplate);
-      for (let [status, employees] of Object.entries(statusTypes)) {
+      let currStatus = -1;
+      for (let employee of employees) {
+        let status = employee.status;
         let statusName = Status[status].name;
-        let subHeader = document.createElement('div');
-        subHeader.classList.add('sub-header');
-        subHeader.textContent = statusName;
-        sectionView.addItem(subHeader);
-        for (let employee of employees) {
-          let item = document.createElement('div');
-          item.classList.add('item');
-          if (employee.remark.length > 0) item.classList.add('bold');
-          let info = employee.rank + " " + employee.name;
-          if (employee.remark && employee.remark.length > 0)
-            info += " - " + employee.remark;
-          item.textContent = info;
-          sectionView.addItem(item);
-          if (employee.isRegular) regCount++;
-          else nsfCount++;
+        if(currStatus != status) {
+          let subHeader = document.createElement('div');
+          subHeader.classList.add('sub-header');
+          subHeader.textContent = statusName;
+          sectionView.addItem(subHeader);
+          currStatus = status;
         }
+        let item = document.createElement('div');
+        item.classList.add('item');
+        if (employee.remark.length > 0) item.classList.add('bold');
+        let info = employee.rank + " " + employee.name;
+        if (employee.remark && employee.remark.length > 0)
+          info += " - " + employee.remark;
+        item.textContent = info;
+        sectionView.addItem(item);
+        if (employee.isRegular) regCount++;
+        else nsfCount++;
       }
       sectionView.setTotal(regCount, nsfCount);
       this.list.appendChild(sectionView);
